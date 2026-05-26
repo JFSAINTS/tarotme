@@ -176,6 +176,179 @@ const UI = {
             a: `<p>Todas las ilustraciones de las 78 cartas provienen de <a href="https://en.wikipedia.org/wiki/Rider%E2%80%93Waite_Tarot" target="_blank" rel="noopener">Wikimedia Commons</a>. Son las ilustraciones originales del Tarot Rider-Waite, obra de <strong>Pamela Colman Smith</strong> (1910), de dominio público.</p>`
           }
         ]
+      },
+      {
+        title: '🔮 Cómo hacer una tirada',
+        items: [
+          {
+            q: '¿Cómo preparo el mazo antes de una tirada?',
+            open: true,
+            a: `<div class="spread-prep">
+<p><strong>1. Limpia y baraja el mazo.</strong> Con las cartas boca abajo, baraja mientras respiras profundo y te concentras en tu pregunta. No hay un número fijo de veces: hazlo hasta que sientas que el mazo está listo.</p>
+<p><strong>2. Formula una pregunta clara.</strong> Las mejores preguntas empiezan con "¿Qué me dice el tarot sobre…?", "¿Cómo puedo…?" o "¿Qué debo saber sobre…?". Evita preguntas de sí/no para obtener lecturas más ricas.</p>
+<p><strong>3. Corta el mazo en tres montones.</strong> Con la mano no dominante, divide el mazo en tres pilas y vuelve a juntarlas en el orden que sientas correcto.</p>
+<p><strong>4. Coloca las cartas boca abajo.</strong> Sácalas de arriba y colócalas en las posiciones de la tirada elegida antes de darles la vuelta.</p>
+<p><strong>5. Fotografía la tirada</strong> y súbela a TarotMe para obtener tu lectura personalizada con IA. 📷</p>
+</div>`
+          },
+          {
+            q: 'Tirada de 1 carta — La carta del día',
+            a: `<p>La tirada más sencilla: <strong>una sola carta</strong> que ofrece un mensaje, consejo o energía dominante para el día o para una pregunta concreta.</p>
+<svg viewBox="0 0 160 125" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="55" y="8" width="50" height="76" rx="5" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="80" y="52" text-anchor="middle" fill="#e8c86a" font-size="24" font-weight="bold" font-family="Georgia,serif">1</text>
+  <text x="80" y="103" text-anchor="middle" fill="#9890b0" font-size="10.5" font-family="sans-serif">Mensaje del día</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>Posición</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td><strong>1 — La Carta</strong></td><td>Energía dominante, consejo o mensaje directo para la situación o el día</td></tr>
+</tbody></table></div>
+<p class="faq-note">💡 Ideal como ritual matutino. Anota la carta y tu primera impresión antes de consultar el significado.</p>`
+          },
+          {
+            q: 'Tirada de 3 cartas — Pasado · Presente · Futuro',
+            a: `<p>La tirada más popular. <strong>Tres cartas</strong> que aportan contexto, claridad y orientación sobre cualquier situación.</p>
+<svg viewBox="0 0 310 125" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="8" width="76" height="76" rx="5" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="48" y="52" text-anchor="middle" fill="#a78bfa" font-size="24" font-weight="bold" font-family="Georgia,serif">1</text>
+  <text x="48" y="103" text-anchor="middle" fill="#9890b0" font-size="10" font-family="sans-serif">Pasado</text>
+  <rect x="117" y="8" width="76" height="76" rx="5" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="155" y="52" text-anchor="middle" fill="#e8c86a" font-size="24" font-weight="bold" font-family="Georgia,serif">2</text>
+  <text x="155" y="103" text-anchor="middle" fill="#9890b0" font-size="10" font-family="sans-serif">Presente</text>
+  <rect x="224" y="8" width="76" height="76" rx="5" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="262" y="52" text-anchor="middle" fill="#a78bfa" font-size="24" font-weight="bold" font-family="Georgia,serif">3</text>
+  <text x="262" y="103" text-anchor="middle" fill="#9890b0" font-size="10" font-family="sans-serif">Futuro</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>Posición</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td><strong>1 — Pasado</strong></td><td>Lo que ha influido en la situación; energías que se están retirando</td></tr>
+<tr><td><strong>2 — Presente</strong></td><td>La situación actual; energía dominante en este momento</td></tr>
+<tr><td><strong>3 — Futuro</strong></td><td>Hacia dónde se dirige la situación si continúa la tendencia actual</td></tr>
+</tbody></table></div>
+<p class="faq-note">💡 Variante útil: usa las posiciones como <em>Situación · Acción · Resultado</em> para preguntas sobre decisiones.</p>`
+          },
+          {
+            q: 'Cruz Celta — 10 cartas',
+            a: `<p>La tirada más completa y conocida. <strong>10 cartas</strong> que exploran la situación desde todos los ángulos: pasado, presente, futuro, influencias internas y externas.</p>
+<svg viewBox="0 0 450 320" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="143" y="124" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="167" y="166" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">1</text>
+  <rect x="119" y="138" width="72" height="48" rx="4" fill="#1e1e35" stroke="#a78bfa" stroke-width="2" opacity="0.92"/>
+  <text x="155" y="168" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">2</text>
+  <rect x="143" y="37" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="167" y="79" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">3</text>
+  <rect x="143" y="211" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="167" y="253" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">4</text>
+  <rect x="75" y="124" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="99" y="166" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">5</text>
+  <rect x="211" y="124" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="235" y="166" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">6</text>
+  <line x1="296" y1="10" x2="296" y2="315" stroke="#2a2a4a" stroke-width="1" stroke-dasharray="5,4"/>
+  <rect x="330" y="238" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="280" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">7</text>
+  <rect x="330" y="157" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="199" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">8</text>
+  <rect x="330" y="76" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="118" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">9</text>
+  <rect x="330" y="4" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="46" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">10</text>
+  <text x="167" y="308" text-anchor="middle" fill="#5a5278" font-size="9" font-family="sans-serif">Cruz</text>
+  <text x="354" y="316" text-anchor="middle" fill="#5a5278" font-size="9" font-family="sans-serif">Báculo</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>#</th><th>Nombre</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>El Presente</td><td>Situación actual del consultante</td></tr>
+<tr><td><strong>2</strong></td><td>El Desafío</td><td>Lo que obstaculiza o cruza la situación (se coloca en perpendicular)</td></tr>
+<tr><td><strong>3</strong></td><td>La Corona</td><td>Objetivo consciente; lo que aspiras a lograr</td></tr>
+<tr><td><strong>4</strong></td><td>La Base</td><td>Fundamento inconsciente; raíces del asunto</td></tr>
+<tr><td><strong>5</strong></td><td>Pasado Reciente</td><td>Influencias que se están retirando</td></tr>
+<tr><td><strong>6</strong></td><td>Futuro Próximo</td><td>Lo que se aproxima en las próximas semanas</td></tr>
+<tr><td><strong>7</strong></td><td>Tú mismo</td><td>Cómo te percibes a ti mismo en la situación</td></tr>
+<tr><td><strong>8</strong></td><td>Entorno</td><td>Influencias externas; cómo te ven los demás</td></tr>
+<tr><td><strong>9</strong></td><td>Esperanzas y Miedos</td><td>Lo que deseas o temes secretamente</td></tr>
+<tr><td><strong>10</strong></td><td>El Resultado</td><td>Desenlace probable si se sigue la tendencia actual</td></tr>
+</tbody></table></div>`
+          },
+          {
+            q: 'Tirada de la Herradura — 7 cartas',
+            a: `<p>Siete cartas en forma de herradura (U invertida). Equilibrada y versátil, ofrece una visión completa con atención especial a obstáculos y al camino a seguir.</p>
+<svg viewBox="0 0 350 245" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <path d="M 31 78 Q 175 238 319 78" stroke="#2a2a4a" stroke-width="1" fill="none" stroke-dasharray="4,4"/>
+  <rect x="8" y="8" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="31" y="49" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">1</text>
+  <rect x="68" y="58" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="91" y="99" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">2</text>
+  <rect x="128" y="98" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="151" y="139" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">3</text>
+  <rect x="152" y="158" width="46" height="70" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="175" y="199" text-anchor="middle" fill="#e8c86a" font-size="15" font-weight="bold" font-family="Georgia,serif">4</text>
+  <rect x="176" y="98" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="199" y="139" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">5</text>
+  <rect x="236" y="58" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="259" y="99" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">6</text>
+  <rect x="296" y="8" width="46" height="70" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="319" y="49" text-anchor="middle" fill="#e8c86a" font-size="15" font-weight="bold" font-family="Georgia,serif">7</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>#</th><th>Nombre</th><th>Significado</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>El Pasado</td><td>Influencias pasadas que afectan la situación</td></tr>
+<tr><td><strong>2</strong></td><td>El Presente</td><td>La situación tal como se encuentra ahora</td></tr>
+<tr><td><strong>3</strong></td><td>Influencias Ocultas</td><td>Factores inconscientes o no visibles que influyen</td></tr>
+<tr><td><strong>4</strong></td><td>Obstáculos</td><td>Lo que se interpone en el camino; el desafío principal</td></tr>
+<tr><td><strong>5</strong></td><td>Actitud del Entorno</td><td>Cómo actúan o piensan los demás implicados</td></tr>
+<tr><td><strong>6</strong></td><td>Lo que debes hacer</td><td>Acción recomendada; el mejor camino a seguir</td></tr>
+<tr><td><strong>7</strong></td><td>El Resultado</td><td>Desenlace probable si se sigue el consejo de las cartas</td></tr>
+</tbody></table></div>`
+          },
+          {
+            q: 'Tirada del Año — 12 cartas',
+            a: `<p>Una carta por cada mes del año, más una carta central opcional como <strong>tema del año</strong>. Perfecta para hacer en Año Nuevo o en tu cumpleaños.</p>
+<svg viewBox="0 0 440 200" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="38" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">1</text>
+  <text x="38" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">ENE</text>
+  <rect x="76" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="104" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">2</text>
+  <text x="104" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">FEB</text>
+  <rect x="142" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="170" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">3</text>
+  <text x="170" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">MAR</text>
+  <rect x="208" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="236" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">4</text>
+  <text x="236" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">ABR</text>
+  <rect x="274" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="302" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">5</text>
+  <text x="302" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">MAY</text>
+  <rect x="340" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="368" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">6</text>
+  <text x="368" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">JUN</text>
+  <rect x="10" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="38" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">7</text>
+  <text x="38" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">JUL</text>
+  <rect x="76" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="104" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">8</text>
+  <text x="104" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">AGO</text>
+  <rect x="142" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="170" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">9</text>
+  <text x="170" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">SEP</text>
+  <rect x="208" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="236" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">10</text>
+  <text x="236" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">OCT</text>
+  <rect x="274" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="302" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">11</text>
+  <text x="302" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">NOV</text>
+  <rect x="340" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="368" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">12</text>
+  <text x="368" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">DIC</text>
+</svg>
+<p>Cada carta representa la energía y los temas principales de ese mes. Interprétala individualmente y también en relación con las cartas adyacentes.</p>
+<p class="faq-note">💡 Añade una carta 13 en el centro como <em>tema del año</em> para tener una visión global del ciclo completo.</p>`
+          }
+        ]
       }
     ],
 
@@ -371,6 +544,179 @@ Pautas importantes:
           {
             q: 'Where do the card images come from?',
             a: `<p>All 78 card illustrations come from <a href="https://en.wikipedia.org/wiki/Rider%E2%80%93Waite_Tarot" target="_blank" rel="noopener">Wikimedia Commons</a>. They are the original Rider-Waite Tarot illustrations by <strong>Pamela Colman Smith</strong> (1910), in the public domain.</p>`
+          }
+        ]
+      },
+      {
+        title: '🔮 How to do a tarot spread',
+        items: [
+          {
+            q: 'How do I prepare the deck before a reading?',
+            open: true,
+            a: `<div class="spread-prep">
+<p><strong>1. Cleanse and shuffle the deck.</strong> With cards face down, shuffle while breathing deeply and focusing on your question. There is no fixed number of times — shuffle until the deck feels ready.</p>
+<p><strong>2. Formulate a clear question.</strong> The best questions start with "What does the tarot say about…?", "How can I…?" or "What should I know about…?". Avoid yes/no questions for richer readings.</p>
+<p><strong>3. Cut the deck into three piles.</strong> With your non-dominant hand, split the deck into three stacks, then reassemble them in whatever order feels right.</p>
+<p><strong>4. Place cards face down.</strong> Draw from the top and place them in the positions of your chosen spread before turning them over.</p>
+<p><strong>5. Photograph the spread</strong> and upload it to TarotMe for your personalized AI reading. 📷</p>
+</div>`
+          },
+          {
+            q: 'One-Card Draw — Card of the Day',
+            a: `<p>The simplest spread: <strong>a single card</strong> offering a message, advice, or dominant energy for the day or for a specific question.</p>
+<svg viewBox="0 0 160 125" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="55" y="8" width="50" height="76" rx="5" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="80" y="52" text-anchor="middle" fill="#e8c86a" font-size="24" font-weight="bold" font-family="Georgia,serif">1</text>
+  <text x="80" y="103" text-anchor="middle" fill="#9890b0" font-size="10.5" font-family="sans-serif">Daily Message</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>Position</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><strong>1 — The Card</strong></td><td>Dominant energy, advice, or direct message for the situation or the day</td></tr>
+</tbody></table></div>
+<p class="faq-note">💡 Great as a morning ritual. Note the card and your first impression before looking up its meaning.</p>`
+          },
+          {
+            q: 'Three-Card Spread — Past · Present · Future',
+            a: `<p>The most popular spread. <strong>Three cards</strong> providing context, clarity and guidance on any situation.</p>
+<svg viewBox="0 0 310 125" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="8" width="76" height="76" rx="5" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="48" y="52" text-anchor="middle" fill="#a78bfa" font-size="24" font-weight="bold" font-family="Georgia,serif">1</text>
+  <text x="48" y="103" text-anchor="middle" fill="#9890b0" font-size="10" font-family="sans-serif">Past</text>
+  <rect x="117" y="8" width="76" height="76" rx="5" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="155" y="52" text-anchor="middle" fill="#e8c86a" font-size="24" font-weight="bold" font-family="Georgia,serif">2</text>
+  <text x="155" y="103" text-anchor="middle" fill="#9890b0" font-size="10" font-family="sans-serif">Present</text>
+  <rect x="224" y="8" width="76" height="76" rx="5" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="262" y="52" text-anchor="middle" fill="#a78bfa" font-size="24" font-weight="bold" font-family="Georgia,serif">3</text>
+  <text x="262" y="103" text-anchor="middle" fill="#9890b0" font-size="10" font-family="sans-serif">Future</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>Position</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><strong>1 — Past</strong></td><td>Influences that shaped the situation; energies that are fading</td></tr>
+<tr><td><strong>2 — Present</strong></td><td>The current situation; dominant energy right now</td></tr>
+<tr><td><strong>3 — Future</strong></td><td>Where the situation is heading if current trends continue</td></tr>
+</tbody></table></div>
+<p class="faq-note">💡 Useful variant: use the positions as <em>Situation · Action · Outcome</em> for decision-making questions.</p>`
+          },
+          {
+            q: 'Celtic Cross — 10 cards',
+            a: `<p>The most complete and well-known spread. <strong>10 cards</strong> exploring the situation from every angle: past, present, future, internal and external influences.</p>
+<svg viewBox="0 0 450 320" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="143" y="124" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="167" y="166" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">1</text>
+  <rect x="119" y="138" width="72" height="48" rx="4" fill="#1e1e35" stroke="#a78bfa" stroke-width="2" opacity="0.92"/>
+  <text x="155" y="168" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">2</text>
+  <rect x="143" y="37" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="167" y="79" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">3</text>
+  <rect x="143" y="211" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="167" y="253" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">4</text>
+  <rect x="75" y="124" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="99" y="166" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">5</text>
+  <rect x="211" y="124" width="48" height="72" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2"/>
+  <text x="235" y="166" text-anchor="middle" fill="#e8c86a" font-size="16" font-weight="bold" font-family="Georgia,serif">6</text>
+  <line x1="296" y1="10" x2="296" y2="315" stroke="#2a2a4a" stroke-width="1" stroke-dasharray="5,4"/>
+  <rect x="330" y="238" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="280" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">7</text>
+  <rect x="330" y="157" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="199" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">8</text>
+  <rect x="330" y="76" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="118" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">9</text>
+  <rect x="330" y="4" width="48" height="72" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="354" y="46" text-anchor="middle" fill="#a78bfa" font-size="16" font-weight="bold" font-family="Georgia,serif">10</text>
+  <text x="167" y="308" text-anchor="middle" fill="#5a5278" font-size="9" font-family="sans-serif">Cross</text>
+  <text x="354" y="316" text-anchor="middle" fill="#5a5278" font-size="9" font-family="sans-serif">Staff</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>#</th><th>Name</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>The Present</td><td>The querent's current situation</td></tr>
+<tr><td><strong>2</strong></td><td>The Challenge</td><td>What crosses or obstructs the situation (placed perpendicular)</td></tr>
+<tr><td><strong>3</strong></td><td>The Crown</td><td>Conscious goal; what you aspire to achieve</td></tr>
+<tr><td><strong>4</strong></td><td>The Root</td><td>Unconscious foundation; roots of the matter</td></tr>
+<tr><td><strong>5</strong></td><td>Recent Past</td><td>Influences that are fading away</td></tr>
+<tr><td><strong>6</strong></td><td>Near Future</td><td>What is approaching in the coming weeks</td></tr>
+<tr><td><strong>7</strong></td><td>Your Self</td><td>How you perceive yourself in the situation</td></tr>
+<tr><td><strong>8</strong></td><td>Environment</td><td>External influences; how others see you</td></tr>
+<tr><td><strong>9</strong></td><td>Hopes &amp; Fears</td><td>What you secretly hope for or fear</td></tr>
+<tr><td><strong>10</strong></td><td>The Outcome</td><td>Likely result if current trends continue</td></tr>
+</tbody></table></div>`
+          },
+          {
+            q: 'Horseshoe Spread — 7 cards',
+            a: `<p>Seven cards arranged in a horseshoe (inverted U) shape. Balanced and versatile, offering a full view of the situation with special focus on obstacles and the path forward.</p>
+<svg viewBox="0 0 350 245" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <path d="M 31 78 Q 175 238 319 78" stroke="#2a2a4a" stroke-width="1" fill="none" stroke-dasharray="4,4"/>
+  <rect x="8" y="8" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="31" y="49" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">1</text>
+  <rect x="68" y="58" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="91" y="99" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">2</text>
+  <rect x="128" y="98" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="151" y="139" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">3</text>
+  <rect x="152" y="158" width="46" height="70" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="175" y="199" text-anchor="middle" fill="#e8c86a" font-size="15" font-weight="bold" font-family="Georgia,serif">4</text>
+  <rect x="176" y="98" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="199" y="139" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">5</text>
+  <rect x="236" y="58" width="46" height="70" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="2"/>
+  <text x="259" y="99" text-anchor="middle" fill="#a78bfa" font-size="15" font-weight="bold" font-family="Georgia,serif">6</text>
+  <rect x="296" y="8" width="46" height="70" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="2.5"/>
+  <text x="319" y="49" text-anchor="middle" fill="#e8c86a" font-size="15" font-weight="bold" font-family="Georgia,serif">7</text>
+</svg>
+<div class="faq-table-wrap"><table class="faq-table">
+<thead><tr><th>#</th><th>Name</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><strong>1</strong></td><td>The Past</td><td>Past influences affecting the situation</td></tr>
+<tr><td><strong>2</strong></td><td>The Present</td><td>The situation as it stands right now</td></tr>
+<tr><td><strong>3</strong></td><td>Hidden Influences</td><td>Unconscious or unseen factors at play</td></tr>
+<tr><td><strong>4</strong></td><td>Obstacles</td><td>What stands in the way; the main challenge</td></tr>
+<tr><td><strong>5</strong></td><td>Others' Attitudes</td><td>How others involved think or act</td></tr>
+<tr><td><strong>6</strong></td><td>What to do</td><td>Recommended action; the best path forward</td></tr>
+<tr><td><strong>7</strong></td><td>The Outcome</td><td>Likely result if the cards' advice is followed</td></tr>
+</tbody></table></div>`
+          },
+          {
+            q: 'Year Spread — 12 cards',
+            a: `<p>One card for each month of the year, plus an optional central card as the <strong>theme of the year</strong>. Perfect to do at New Year or on your birthday.</p>
+<svg viewBox="0 0 440 200" class="spread-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="38" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">1</text>
+  <text x="38" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">JAN</text>
+  <rect x="76" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="104" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">2</text>
+  <text x="104" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">FEB</text>
+  <rect x="142" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="170" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">3</text>
+  <text x="170" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">MAR</text>
+  <rect x="208" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="236" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">4</text>
+  <text x="236" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">APR</text>
+  <rect x="274" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="302" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">5</text>
+  <text x="302" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">MAY</text>
+  <rect x="340" y="15" width="56" height="75" rx="4" fill="#161628" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="368" y="58" text-anchor="middle" fill="#a78bfa" font-size="13" font-weight="bold" font-family="Georgia,serif">6</text>
+  <text x="368" y="103" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">JUN</text>
+  <rect x="10" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="38" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">7</text>
+  <text x="38" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">JUL</text>
+  <rect x="76" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="104" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">8</text>
+  <text x="104" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">AUG</text>
+  <rect x="142" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="170" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">9</text>
+  <text x="170" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">SEP</text>
+  <rect x="208" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="236" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">10</text>
+  <text x="236" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">OCT</text>
+  <rect x="274" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="302" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">11</text>
+  <text x="302" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">NOV</text>
+  <rect x="340" y="110" width="56" height="75" rx="4" fill="#161628" stroke="#c9a84c" stroke-width="1.5"/>
+  <text x="368" y="153" text-anchor="middle" fill="#e8c86a" font-size="13" font-weight="bold" font-family="Georgia,serif">12</text>
+  <text x="368" y="198" text-anchor="middle" fill="#5a5278" font-size="8.5" font-family="sans-serif">DEC</text>
+</svg>
+<p>Each card represents the energy and main themes of that month. Interpret each one individually and also in relation to adjacent cards.</p>
+<p class="faq-note">💡 Add a 13th card in the center as the <em>theme of the year</em> for an overview of the complete cycle.</p>`
           }
         ]
       }
