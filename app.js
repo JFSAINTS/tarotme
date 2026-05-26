@@ -14,6 +14,92 @@ const state = {
 };
 
 // ═══════════════════════════════════════
+// STORAGE KEYS
+// ═══════════════════════════════════════
+const LS_API_KEY    = 'tarotme_api_key';
+const LS_DISCLAIMER = 'tarotme_disclaimer_shown';
+const LS_LANG       = 'tarotme_lang';
+
+// ═══════════════════════════════════════
+// INDEXED DB — persistent backup
+// Survives localStorage clears; only truly deleted when user clicks "Eliminar clave"
+// ═══════════════════════════════════════
+const DB_NAME    = 'tarotme-db';
+const DB_STORE   = 'kv';
+const DB_VERSION = 1;
+
+function idbOpen() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => e.target.result.createObjectStore(DB_STORE);
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror   = e => reject(e.target.error);
+  });
+}
+
+async function idbGet(key) {
+  try {
+    const db = await idbOpen();
+    return new Promise((resolve, reject) => {
+      const tx  = db.transaction(DB_STORE, 'readonly');
+      const req = tx.objectStore(DB_STORE).get(key);
+      req.onsuccess = () => resolve(req.result ?? null);
+      req.onerror   = () => reject(req.error);
+    });
+  } catch { return null; }
+}
+
+async function idbSave(key, value) {
+  try {
+    const db = await idbOpen();
+    return new Promise((resolve, reject) => {
+      const tx  = db.transaction(DB_STORE, 'readwrite');
+      const req = tx.objectStore(DB_STORE).put(value, key);
+      req.onsuccess = () => resolve();
+      req.onerror   = () => reject(req.error);
+    });
+  } catch { /* non-fatal */ }
+}
+
+async function idbDel(key) {
+  try {
+    const db = await idbOpen();
+    return new Promise((resolve, reject) => {
+      const tx  = db.transaction(DB_STORE, 'readwrite');
+      const req = tx.objectStore(DB_STORE).delete(key);
+      req.onsuccess = () => resolve();
+      req.onerror   = () => reject(req.error);
+    });
+  } catch { /* non-fatal */ }
+}
+
+/** Write to localStorage AND IndexedDB simultaneously. */
+async function storeSave(key, value) {
+  localStorage.setItem(key, value);
+  await idbSave(key, value);
+}
+
+/** Remove from localStorage AND IndexedDB simultaneously. */
+async function storeDel(key) {
+  localStorage.removeItem(key);
+  await idbDel(key);
+}
+
+/**
+ * On startup: if any critical key is missing from localStorage
+ * (e.g. browser cleared it), restore it from IndexedDB.
+ */
+async function restoreStorage() {
+  const keys = [LS_API_KEY, LS_DISCLAIMER, LS_LANG];
+  for (const key of keys) {
+    if (!localStorage.getItem(key)) {
+      const val = await idbGet(key);
+      if (val) localStorage.setItem(key, val);
+    }
+  }
+}
+
+// ═══════════════════════════════════════
 // DOM REFERENCES
 // ═══════════════════════════════════════
 const $ = id => document.getElementById(id);
@@ -159,7 +245,7 @@ function applyTranslations() {
   // Special: search placeholder
   cardSearch.placeholder   = t('search_ph');
   questionInput.placeholder = t('question_ph');
-  apiDot.title = localStorage.getItem('tarotme_api_key')
+  apiDot.title = localStorage.getItem(LS_API_KEY)
     ? t('api_dot_on') : t('api_dot_off');
 
   // Upload title (has a <strong> tag)
@@ -214,10 +300,11 @@ function renderFAQ() {
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
-function init() {
+async function init() {
+  await restoreStorage();
   initStarfield();
 
-  if (!localStorage.getItem('tarotme_disclaimer_shown')) {
+  if (!localStorage.getItem(LS_DISCLAIMER)) {
     disclaimerModal.classList.remove('hidden');
   }
 
@@ -233,6 +320,7 @@ function init() {
 langBtn.addEventListener('click', () => {
   const next = getLang() === 'es' ? 'en' : 'es';
   setLang(next);
+  idbSave(LS_LANG, next); // keep IDB in sync (fire-and-forget)
   applyTranslations();
 });
 
@@ -240,7 +328,7 @@ langBtn.addEventListener('click', () => {
 // DISCLAIMER
 // ═══════════════════════════════════════
 disclaimerAccept.addEventListener('click', () => {
-  localStorage.setItem('tarotme_disclaimer_shown', '1');
+  storeSave(LS_DISCLAIMER, '1'); // fire-and-forget async
   disclaimerModal.classList.add('hidden');
 });
 
@@ -248,7 +336,7 @@ disclaimerAccept.addEventListener('click', () => {
 // SETTINGS / API KEY
 // ═══════════════════════════════════════
 function openSettings() {
-  const key = localStorage.getItem('tarotme_api_key') || '';
+  const key = localStorage.getItem(LS_API_KEY) || '';
   apiKeyInput.value = key ? '••••••••••••••••••••' : '';
   settingsStatus.textContent = '';
   settingsModal.classList.remove('hidden');
@@ -265,7 +353,7 @@ apiKeyInput.addEventListener('focus', () => {
   if (apiKeyInput.value.startsWith('•')) apiKeyInput.value = '';
 });
 
-apiKeySave.addEventListener('click', () => {
+apiKeySave.addEventListener('click', async () => {
   const key = apiKeyInput.value.trim();
   if (!key || key.startsWith('•')) {
     settingsStatus.style.color = 'var(--warn)';
@@ -277,15 +365,15 @@ apiKeySave.addEventListener('click', () => {
     settingsStatus.textContent = t('settings_prefix');
     return;
   }
-  localStorage.setItem('tarotme_api_key', key);
+  await storeSave(LS_API_KEY, key);
   actualizarEstadoApiKey();
   settingsStatus.style.color = 'var(--success)';
   settingsStatus.textContent = t('settings_saved');
   setTimeout(() => settingsModal.classList.add('hidden'), 1400);
 });
 
-apiKeyClear.addEventListener('click', () => {
-  localStorage.removeItem('tarotme_api_key');
+apiKeyClear.addEventListener('click', async () => {
+  await storeDel(LS_API_KEY);
   apiKeyInput.value = '';
   actualizarEstadoApiKey();
   settingsStatus.style.color = 'var(--text3)';
@@ -293,7 +381,7 @@ apiKeyClear.addEventListener('click', () => {
 });
 
 function actualizarEstadoApiKey() {
-  const tieneKey = !!localStorage.getItem('tarotme_api_key');
+  const tieneKey = !!localStorage.getItem(LS_API_KEY);
   apiDot.classList.toggle('active', tieneKey);
   apiDot.title = tieneKey ? t('api_dot_on') : t('api_dot_off');
   apiNotice.classList.toggle('hidden', tieneKey);
