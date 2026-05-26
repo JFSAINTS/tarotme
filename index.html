@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer-when-downgrade">
+  <title>TarotMe — Tarot Rider-Waite</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a0a14">
+  <meta name="description" content="Interpretación del Tarot Rider-Waite. Biblioteca de las 78 cartas y lecturas personalizadas con IA.">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       MODAL: Advertencia (primera visita)
+  ══════════════════════════════════════ -->
+  <div id="disclaimer-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disc-title">
+    <div class="modal-box disclaimer-box">
+      <div class="disc-icon">⚠️</div>
+      <h2 id="disc-title">Antes de continuar</h2>
+      <p>Las lecturas de tarot son una herramienta de <strong>reflexión personal</strong> y exploración simbólica. No son ciencia, no predicen el futuro con certeza y no deben reemplazar ningún tipo de asesoramiento médico, legal, financiero ni psicológico.</p>
+      <p>Los resultados generados por inteligencia artificial son <strong>orientativos</strong>. Solo tú puedes valorar si te son útiles o no. Úsalos con criterio propio.</p>
+      <button id="disclaimer-accept" class="btn-primary">Entendido, continuar</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       MODAL: Configuración (clave API)
+  ══════════════════════════════════════ -->
+  <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <div class="modal-box settings-box">
+      <button class="modal-close" id="settings-close" aria-label="Cerrar">✕</button>
+      <h2 id="settings-title">⚙️ Configuración</h2>
+      <p>Para usar la lectura personalizada con IA necesitas una clave de API de Anthropic. Tu clave se guarda solo en este dispositivo.</p>
+      <div class="field-group">
+        <label for="api-key-input">Clave de API de Anthropic</label>
+        <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+        <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" class="link-small">Obtener clave en console.anthropic.com →</a>
+      </div>
+      <div class="settings-actions">
+        <button id="api-key-save" class="btn-primary">Guardar</button>
+        <button id="api-key-clear" class="btn-danger-outline">Eliminar clave</button>
+      </div>
+      <p id="settings-status" class="settings-status"></p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       MODAL: Detalle de carta
+  ══════════════════════════════════════ -->
+  <div id="card-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
+    <div class="modal-box card-detail-box">
+      <button class="modal-close" id="card-modal-close" aria-label="Cerrar">✕</button>
+      <div class="card-detail-inner">
+        <div class="card-detail-image-wrap">
+          <img id="card-detail-img" src="" alt="" class="card-detail-img">
+          <div id="card-detail-badge" class="arcana-badge"></div>
+        </div>
+        <div class="card-detail-info">
+          <p id="card-detail-numero" class="card-detail-numero"></p>
+          <h2 id="card-modal-title" class="card-detail-nombre"></h2>
+          <p id="card-detail-ingles" class="card-detail-ingles"></p>
+          <div id="card-detail-keywords" class="keywords-list"></div>
+          <div class="card-tabs">
+            <button class="card-tab active" data-tab="derecho">Carta derecha</button>
+            <button class="card-tab" data-tab="invertido">Carta invertida</button>
+            <button class="card-tab" data-tab="simbolismo">Simbolismo</button>
+          </div>
+          <div id="card-tab-content" class="card-tab-content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CABECERA
+  ══════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-logo">
+      <span class="logo-moon">☽</span>
+      <span class="logo-text">TarotMe</span>
+    </div>
+    <nav class="app-nav" role="navigation" aria-label="Secciones principales">
+      <button class="nav-tab active" data-section="arcanos">Las Cartas</button>
+      <button class="nav-tab" data-section="lectura">Tu Lectura</button>
+      <button class="nav-tab" data-section="faq">FAQ</button>
+    </nav>
+    <button id="settings-btn" class="icon-btn" aria-label="Configuración" title="Configurar clave de API">
+      <span id="api-dot" class="api-dot" title="Sin clave de API configurada"></span>
+      ⚙️
+    </button>
+  </header>
+
+  <!-- Banner de advertencia persistente -->
+  <div class="disclaimer-bar" role="note">
+    <span>⚠️</span>
+    <span>Las lecturas son orientativas y para reflexión personal. No sustituyen asesoramiento profesional. Solo tú puedes validar su utilidad.</span>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CONTENIDO PRINCIPAL
+  ══════════════════════════════════════ -->
+  <main>
+
+    <!-- ─── SECCIÓN: Las Cartas ─── -->
+    <section id="arcanos" class="section active" aria-label="Biblioteca de cartas">
+
+      <div class="section-header">
+        <h1>Las 78 Cartas del Tarot Rider-Waite</h1>
+        <p class="section-subtitle">Pulsa cualquier carta para ver su significado completo</p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="search" id="card-search" placeholder="Buscar carta..." aria-label="Buscar carta" autocomplete="off">
+        </div>
+        <div class="filter-pills" role="group" aria-label="Filtrar por tipo">
+          <button class="pill active" data-filter="all">Todas <span class="pill-count" id="count-all"></span></button>
+          <button class="pill" data-filter="mayor">Arcanos Mayores</button>
+          <button class="pill" data-filter="bastos">🔥 Bastos</button>
+          <button class="pill" data-filter="copas">💧 Copas</button>
+          <button class="pill" data-filter="espadas">💨 Espadas</button>
+          <button class="pill" data-filter="oros">🌿 Oros</button>
+        </div>
+      </div>
+
+      <div id="cards-grid" class="cards-grid" role="list" aria-label="Cartas del tarot">
+        <!-- Renderizado por app.js -->
+      </div>
+
+      <p id="no-results" class="no-results hidden">No se encontraron cartas con ese criterio.</p>
+    </section>
+
+    <!-- ─── SECCIÓN: Tu Lectura ─── -->
+    <section id="lectura" class="section hidden" aria-label="Lectura personalizada">
+
+      <div class="section-header">
+        <h1>Tu Lectura Personalizada</h1>
+        <p class="section-subtitle">Sube una foto de tu tirada y escribe tu pregunta. La IA interpretará las cartas como un tarotista experimentado.</p>
+      </div>
+
+      <!-- Aviso si no hay clave de API -->
+      <div id="api-notice" class="api-notice hidden">
+        <div class="api-notice-icon">🔑</div>
+        <div>
+          <strong>Clave de API necesaria</strong>
+          <p>Para usar la lectura con IA necesitas configurar tu clave de API de Anthropic. Es gratuita para uso personal.</p>
+        </div>
+        <button class="btn-secondary" onclick="window.openSettings()">Configurar ahora</button>
+      </div>
+
+      <div class="reading-container">
+
+        <!-- Paso 1: Subir imagen -->
+        <div class="reading-step">
+          <div class="step-label"><span class="step-num">1</span> Fotografía tu tirada</div>
+          <div class="upload-zone" id="upload-zone" role="button" tabindex="0" aria-label="Área para subir imagen de tarot">
+            <input type="file" id="image-input" accept="image/*" hidden aria-hidden="true">
+            <div class="upload-placeholder" id="upload-placeholder">
+              <div class="upload-icon">🃏</div>
+              <p>Arrastra aquí la foto de tu tirada<br>o <strong>haz clic para seleccionar</strong></p>
+              <p class="upload-hint">Acepta JPG, PNG, WEBP</p>
+            </div>
+            <div class="upload-preview hidden" id="upload-preview">
+              <img id="preview-img" src="" alt="Vista previa de la tirada">
+              <button id="clear-image-btn" class="clear-img-btn" aria-label="Quitar imagen">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paso 2: Pregunta -->
+        <div class="reading-step">
+          <div class="step-label"><span class="step-num">2</span> Tu pregunta o tema</div>
+          <textarea id="question-input"
+            placeholder="Escribe aquí tu pregunta o el tema sobre el que quieres reflexionar...&#10;Ejemplo: ¿Cómo está mi situación sentimental en este momento?&#10;Ejemplo: Quiero entender qué me dice el tarot sobre mi trabajo."
+            rows="4"
+            aria-label="Escribe tu pregunta o tema"
+            maxlength="600"></textarea>
+          <p class="char-count"><span id="char-count">0</span>/600</p>
+        </div>
+
+        <!-- Botón interpretar -->
+        <button id="read-btn" class="btn-read" disabled aria-label="Interpretar tirada">
+          <span class="read-btn-icon">✦</span>
+          <span id="read-btn-text">Interpretar tirada</span>
+        </button>
+
+        <!-- Resultado -->
+        <div id="reading-result" class="reading-result hidden" aria-live="polite" aria-label="Resultado de la lectura">
+          <div class="result-header">
+            <h3>✦ Tu lectura</h3>
+            <div class="result-disclaimer">
+              ⚠️ Esta interpretación es orientativa y para reflexión personal. No la tomes como verdad absoluta.
+            </div>
+          </div>
+          <div id="result-content" class="result-content"></div>
+          <div class="result-actions">
+            <button id="new-reading-btn" class="btn-secondary">Nueva lectura</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── SECCIÓN: FAQ ─── -->
+    <section id="faq" class="section hidden" aria-label="Preguntas frecuentes">
+
+      <div class="section-header">
+        <h1>Preguntas Frecuentes</h1>
+        <p class="section-subtitle">Todo lo que necesitas saber sobre TarotMe y la clave de API</p>
+      </div>
+
+      <div class="faq-container">
+
+        <!-- Bloque: Uso general -->
+        <div class="faq-group">
+          <h2 class="faq-group-title">⚙️ Uso general</h2>
+
+          <details class="faq-item" open>
+            <summary class="faq-q">¿Necesito pagar para usar TarotMe?</summary>
+            <div class="faq-a">
+              <p>La <strong>biblioteca de las 78 cartas</strong> es completamente gratuita y no requiere ninguna cuenta ni clave. Puedes explorar todas las cartas, sus significados y simbolismo sin límite.</p>
+              <p>La <strong>lectura personalizada con IA</strong> requiere tu propia clave de API de Anthropic. Esta clave se usa directamente desde tu navegador y se guarda solo en tu dispositivo.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">¿Qué modelo de IA usa TarotMe?</summary>
+            <div class="faq-a">
+              <p>TarotMe utiliza <strong>Claude claude-opus-4-7</strong> de Anthropic, uno de los modelos más avanzados disponibles. Está configurado con un prompt especializado para actuar como tarotista experimentada, interpretando las cartas en español con un estilo cálido y cercano.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">¿Es segura mi clave de API?</summary>
+            <div class="faq-a">
+              <p>Tu clave de API se guarda <strong>únicamente en tu dispositivo</strong> (localStorage del navegador) y nunca se envía a ningún servidor de TarotMe. Las solicitudes van directamente desde tu navegador a la API de Anthropic.</p>
+              <p>⚠️ Nunca compartas tu clave con nadie ni la introduzcas en páginas desconocidas.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Bloque: Clave de API y límites -->
+        <div class="faq-group">
+          <h2 class="faq-group-title">🔑 Clave de API y límites de uso</h2>
+
+          <details class="faq-item" open>
+            <summary class="faq-q">¿Cuántas lecturas puedo hacer gratis?</summary>
+            <div class="faq-a">
+              <p>Anthropic ofrece <strong>aproximadamente $5 de crédito inicial</strong> para cuentas nuevas. No hay una cuota fija diaria de consultas gratuitas: el crédito se va consumiendo por uso.</p>
+              <div class="faq-table-wrap">
+                <table class="faq-table">
+                  <thead>
+                    <tr><th>Concepto</th><th>Detalle</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Crédito inicial (cuenta nueva)</td><td>~$5 USD (uso único)</td></tr>
+                    <tr><td>Coste por lectura (aprox.)</td><td>$0.05 – $0.12 USD</td></tr>
+                    <tr><td>Lecturas estimadas con $5</td><td><strong>40 – 100 lecturas</strong></td></tr>
+                    <tr><td>Cuota diaria gratuita permanente</td><td>❌ No existe</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="faq-note">💡 El coste varía según la longitud de la pregunta y la respuesta generada.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">¿Qué pasa cuando se acaba el crédito gratuito?</summary>
+            <div class="faq-a">
+              <p>Una vez consumidos los $5 de crédito inicial, recibirás un error de tipo <code>insufficient_quota</code> o similar. Para seguir usando la lectura con IA necesitarás añadir un método de pago en <a href="https://console.anthropic.com/billing" target="_blank" rel="noopener">console.anthropic.com/billing</a>.</p>
+              <p>La <strong>tarifa de Claude claude-opus-4-7</strong> es de pago por uso:</p>
+              <div class="faq-table-wrap">
+                <table class="faq-table">
+                  <thead>
+                    <tr><th>Tipo de token</th><th>Precio por millón</th><th>Por lectura típica</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Entrada (imagen + pregunta)</td><td>$15 / M tokens</td><td>~$0.01</td></tr>
+                    <tr><td>Salida (interpretación)</td><td>$75 / M tokens</td><td>~$0.07</td></tr>
+                    <tr><td><strong>Total por lectura</strong></td><td colspan="2"><strong>~$0.08 USD</strong></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="faq-note">Con $10 de recarga puedes hacer aproximadamente 125 lecturas. Los precios son orientativos y pueden cambiar.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">¿Existen límites de velocidad (rate limits)?</summary>
+            <div class="faq-a">
+              <p>Sí. Anthropic aplica límites de tasa según el nivel de tu cuenta. Para cuentas nuevas (sin historial de pago), los límites suelen ser:</p>
+              <ul class="faq-list">
+                <li><strong>Tier 1 (sin facturación):</strong> ~5 peticiones por minuto, 10.000 tokens por minuto</li>
+                <li><strong>Tier 2 (con método de pago):</strong> límites más altos según uso</li>
+              </ul>
+              <p>Para el uso normal de TarotMe (una lectura cada pocos minutos) estos límites no suponen ningún problema.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">¿Cómo obtengo una clave de API de Anthropic?</summary>
+            <div class="faq-a">
+              <ol class="faq-steps">
+                <li>Ve a <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> y crea una cuenta gratuita.</li>
+                <li>Accede a <strong>Settings → API Keys</strong> y pulsa <strong>Create Key</strong>.</li>
+                <li>Copia la clave (empieza por <code>sk-ant-</code>). Solo se muestra una vez.</li>
+                <li>En TarotMe, pulsa el icono ⚙️ en la cabecera y pega tu clave.</li>
+              </ol>
+              <p class="faq-note">🎁 Las cuentas nuevas reciben ~$5 de crédito automáticamente, sin necesidad de introducir datos de pago.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Bloque: Errores comunes -->
+        <div class="faq-group">
+          <h2 class="faq-group-title">🔧 Errores comunes</h2>
+
+          <details class="faq-item">
+            <summary class="faq-q">Error: <code>invalid_api_key</code></summary>
+            <div class="faq-a">
+              <p>La clave introducida no es válida. Comprueba que empieza por <code>sk-ant-</code> y que la copiaste completa sin espacios extra. Genera una nueva en <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys</a>.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">Error: <code>insufficient_quota</code> / <code>credit balance is too low</code></summary>
+            <div class="faq-a">
+              <p>Has agotado tu crédito. Añade un método de pago en <a href="https://console.anthropic.com/billing" target="_blank" rel="noopener">console.anthropic.com/billing</a> o espera si tienes créditos mensuales renovables en tu plan.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-q">Error: <code>overloaded_error</code> o la lectura no responde</summary>
+            <div class="faq-a">
+              <p>La API de Anthropic está temporalmente sobrecargada. Es un problema del lado del servidor, no de tu clave. Espera unos segundos y vuelve a intentarlo.</p>
+            </div>
+          </details>
+        </div>
+
+        <!-- Bloque: Las imágenes -->
+        <div class="faq-group">
+          <h2 class="faq-group-title">🃏 Las imágenes del tarot</h2>
+
+          <details class="faq-item">
+            <summary class="faq-q">¿De dónde vienen las imágenes de las cartas?</summary>
+            <div class="faq-a">
+              <p>Todas las ilustraciones de las 78 cartas provienen de <a href="https://en.wikipedia.org/wiki/Rider%E2%80%93Waite_Tarot" target="_blank" rel="noopener">Wikimedia Commons</a>. Son las ilustraciones originales del Tarot Rider-Waite, obra de <strong>Pamela Colman Smith</strong> (1910), y son de dominio público al haber superado los 100 años de protección por copyright.</p>
+            </div>
+          </details>
+        </div>
+
+      </div><!-- /faq-container -->
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>Imágenes: <a href="https://en.wikipedia.org/wiki/Rider%E2%80%93Waite_Tarot" target="_blank" rel="noopener">Wikimedia Commons</a> · Tarot Rider-Waite, Pamela Colman Smith (1910) · Dominio público</p>
+    <p>TarotMe — solo para reflexión personal. Úsalo con criterio propio.</p>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
