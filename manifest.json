@@ -2,7 +2,7 @@
   "name": "TarotMe — Tarot Rider-Waite",
   "short_name": "TarotMe",
   "description": "Interpretación del Tarot Rider-Waite. Biblioteca de las 78 cartas y lecturas personalizadas con IA.",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#08080f",
   "theme_color": "#0a0a14",
