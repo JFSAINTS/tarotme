@@ -22,7 +22,7 @@ export const CARTAS = [
   {
     id: "ar01", numero: "I", nombre: "El Mago", ingles: "The Magician",
     arcana: "mayor", palo: null,
-    imagen: WIKIMEDIA + "1/10/RWS_Tarot_01_Magician.jpg",
+    imagen: WIKIMEDIA + "d/de/RWS_Tarot_01_Magician.jpg",
     palabrasClave: ["voluntad", "poder", "manifestación", "habilidad", "acción"],
     derecho: "Tienes todos los recursos que necesitas para lograr lo que deseas. El Mago te dice que el momento de actuar es ahora, con intención y determinación. Las cuatro herramientas sobre su mesa (varita, copa, espada y pentáculo) representan que tienes acceso a todo lo necesario. «Como arriba, así abajo»: lo que imaginas puedes hacerlo real.",
     invertido: "Manipulación, uso de habilidades para fines equivocados o potencial que no se está aprovechando. También puede señalar engaño por parte de alguien cercano o dudas sobre tus propias capacidades.",
@@ -67,7 +67,7 @@ export const CARTAS = [
   {
     id: "ar06", numero: "VI", nombre: "Los Amantes", ingles: "The Lovers",
     arcana: "mayor", palo: null,
-    imagen: WIKIMEDIA + "3/3a/TheLovers.jpg",
+    imagen: WIKIMEDIA + "d/db/RWS_Tarot_06_Lovers.jpg",
     palabrasClave: ["amor", "elección", "valores", "unión", "alineación"],
     derecho: "Una gran decisión de amor o de valores llama a tu puerta. Los Amantes no son solo sobre relaciones románticas: también hablan de elegir desde el corazón y alinearte con lo que verdaderamente valoras. Cuando aparece, hay algo importante que decidir, y la elección debe venir de tus convicciones más profundas.",
     invertido: "Desalineación de valores, conflicto interno entre lo que quieres y lo que crees que debes hacer. También puede señalar una relación con incompatibilidades profundas o una decisión que se evita.",

@@ -1,7 +1,9 @@
 import { CARTAS, filtrarCartas } from './cards-data.js';
+import { CARDS_EN } from './cards-en.js';
+import { t, getLang, setLang } from './i18n.js';
 
 // ═══════════════════════════════════════
-// ESTADO DE LA APP
+// STATE
 // ═══════════════════════════════════════
 const state = {
   filtroActivo: 'all',
@@ -12,59 +14,227 @@ const state = {
 };
 
 // ═══════════════════════════════════════
-// REFERENCIAS DOM
+// DOM REFERENCES
 // ═══════════════════════════════════════
 const $ = id => document.getElementById(id);
 
-const disclaimerModal = $('disclaimer-modal');
+const disclaimerModal  = $('disclaimer-modal');
 const disclaimerAccept = $('disclaimer-accept');
-const settingsModal = $('settings-modal');
-const settingsBtn = $('settings-btn');
-const settingsClose = $('settings-close');
-const apiKeyInput = $('api-key-input');
-const apiKeySave = $('api-key-save');
-const apiKeyClear = $('api-key-clear');
-const settingsStatus = $('settings-status');
-const apiDot = $('api-dot');
-const apiNotice = $('api-notice');
+const settingsModal    = $('settings-modal');
+const settingsBtn      = $('settings-btn');
+const settingsClose    = $('settings-close');
+const apiKeyInput      = $('api-key-input');
+const apiKeySave       = $('api-key-save');
+const apiKeyClear      = $('api-key-clear');
+const settingsStatus   = $('settings-status');
+const apiDot           = $('api-dot');
+const apiNotice        = $('api-notice');
+const langBtn          = $('lang-btn');
+const langLabel        = $('lang-label');
 
-const cardModal = $('card-modal');
-const cardModalClose = $('card-modal-close');
+const cardModal        = $('card-modal');
+const cardModalClose   = $('card-modal-close');
+const cardsGrid        = $('cards-grid');
+const cardSearch       = $('card-search');
+const noResults        = $('no-results');
 
-const cardsGrid = $('cards-grid');
-const cardSearch = $('card-search');
-const noResults = $('no-results');
+const uploadZone       = $('upload-zone');
+const imageInput       = $('image-input');
+const uploadPlaceholder= $('upload-placeholder');
+const uploadPreview    = $('upload-preview');
+const previewImg       = $('preview-img');
+const clearImageBtn    = $('clear-image-btn');
+const questionInput    = $('question-input');
+const charCount        = $('char-count');
+const readBtn          = $('read-btn');
+const readBtnText      = $('read-btn-text');
+const readingResult    = $('reading-result');
+const resultContent    = $('result-content');
+const newReadingBtn    = $('new-reading-btn');
 
-const uploadZone = $('upload-zone');
-const imageInput = $('image-input');
-const uploadPlaceholder = $('upload-placeholder');
-const uploadPreview = $('upload-preview');
-const previewImg = $('preview-img');
-const clearImageBtn = $('clear-image-btn');
-const questionInput = $('question-input');
-const charCount = $('char-count');
-const readBtn = $('read-btn');
-const readBtnText = $('read-btn-text');
-const readingResult = $('reading-result');
-const resultContent = $('result-content');
-const newReadingBtn = $('new-reading-btn');
-
-const navTabs = document.querySelectorAll('.nav-tab');
-const sections = document.querySelectorAll('.section');
+const navTabs     = document.querySelectorAll('.nav-tab');
+const sections    = document.querySelectorAll('.section');
 const filterPills = document.querySelectorAll('.pill');
 
 // ═══════════════════════════════════════
-// ARRANQUE
+// STARFIELD CANVAS
+// ═══════════════════════════════════════
+function initStarfield() {
+  const canvas = $('starfield');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const stars = [];
+  const COUNTS = { tiny: 180, small: 80, medium: 35, large: 10 };
+  const COLORS = [
+    [255, 255, 255],   // white
+    [255, 240, 200],   // warm white
+    [200, 220, 255],   // blue-white
+    [201, 168,  76],   // golden (theme)
+    [167, 139, 250],   // purple (theme)
+  ];
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initStars();
+  }
+
+  function initStars() {
+    stars.length = 0;
+    const addStars = (count, minR, maxR, minAlpha, maxAlpha) => {
+      for (let i = 0; i < count; i++) {
+        const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        stars.push({
+          x:      Math.random() * canvas.width,
+          y:      Math.random() * canvas.height,
+          r:      minR + Math.random() * (maxR - minR),
+          alpha:  minAlpha + Math.random() * (maxAlpha - minAlpha),
+          speed:  0.003 + Math.random() * 0.012,
+          phase:  Math.random() * Math.PI * 2,
+          color,
+        });
+      }
+    };
+    addStars(COUNTS.tiny,   0.3, 0.8,  0.2, 0.6);
+    addStars(COUNTS.small,  0.7, 1.2,  0.4, 0.85);
+    addStars(COUNTS.medium, 1.2, 1.8,  0.5, 0.95);
+    addStars(COUNTS.large,  1.8, 2.8,  0.6, 1.0);
+  }
+
+  let lastTime = 0;
+  function draw(time) {
+    const dt = (time - lastTime) / 1000;
+    lastTime = time;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (const s of stars) {
+      s.phase += s.speed * (dt || 0.016);
+      const twinkle = 0.55 + 0.45 * Math.sin(s.phase);
+      const a = s.alpha * twinkle;
+      const [r, g, b] = s.color;
+      // Glow for larger stars
+      if (s.r > 1.5) {
+        const grd = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 3.5);
+        grd.addColorStop(0,   `rgba(${r},${g},${b},${a * 0.4})`);
+        grd.addColorStop(1,   `rgba(${r},${g},${b},0)`);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+      }
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g},${b},${a})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  requestAnimationFrame(draw);
+}
+
+// ═══════════════════════════════════════
+// i18n — apply translations to DOM
+// ═══════════════════════════════════════
+function applyTranslations() {
+  const lang = getLang();
+  document.documentElement.lang = lang;
+  langLabel.textContent = lang.toUpperCase();
+
+  // data-i18n (textContent)
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    const val = t(key);
+    if (val && val !== key) el.textContent = val;
+  });
+
+  // data-i18n-html (innerHTML)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    const val = t(key);
+    if (val && val !== key) el.innerHTML = val;
+  });
+
+  // Special: search placeholder
+  cardSearch.placeholder   = t('search_ph');
+  questionInput.placeholder = t('question_ph');
+  apiDot.title = localStorage.getItem('tarotme_api_key')
+    ? t('api_dot_on') : t('api_dot_off');
+
+  // Upload title (has a <strong> tag)
+  const uploadTitleEl = $('upload-title-text');
+  if (uploadTitleEl) {
+    uploadTitleEl.innerHTML = t('upload_title') + '<br>' + t('upload_or');
+  }
+
+  // Card tab buttons (may have been re-rendered)
+  document.querySelectorAll('.card-tab').forEach(btn => {
+    const key = btn.dataset.i18n;
+    if (key) btn.textContent = t(key);
+  });
+
+  // Filter pill for "all" (has count inside)
+  const allPill = document.querySelector('.pill[data-filter="all"] [data-i18n]');
+  if (allPill) allPill.textContent = t('filter_all');
+
+  // Banner text
+  const bannerText = $('banner-text');
+  if (bannerText) bannerText.textContent = t('banner_text');
+
+  // Re-render FAQ
+  renderFAQ();
+
+  // Re-render cards grid (card names change language)
+  renderizarCartas();
+}
+
+// ═══════════════════════════════════════
+// FAQ — dynamic render
+// ═══════════════════════════════════════
+function renderFAQ() {
+  const container = $('faq-container');
+  if (!container) return;
+  const groups = t('faq_groups');
+  if (!Array.isArray(groups)) return;
+
+  container.innerHTML = groups.map(group => `
+    <div class="faq-group">
+      <h2 class="faq-group-title">${group.title}</h2>
+      ${group.items.map(item => `
+        <details class="faq-item"${item.open ? ' open' : ''}>
+          <summary class="faq-q">${item.q}</summary>
+          <div class="faq-a">${item.a}</div>
+        </details>
+      `).join('')}
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════
+// INIT
 // ═══════════════════════════════════════
 function init() {
+  initStarfield();
+
   if (!localStorage.getItem('tarotme_disclaimer_shown')) {
     disclaimerModal.classList.remove('hidden');
   }
+
   actualizarEstadoApiKey();
-  renderizarCartas();
-  bindEventos();
+  applyTranslations();
   $('count-all').textContent = `(${CARTAS.length})`;
+  bindEventos();
 }
+
+// ═══════════════════════════════════════
+// LANGUAGE TOGGLE
+// ═══════════════════════════════════════
+langBtn.addEventListener('click', () => {
+  const next = getLang() === 'es' ? 'en' : 'es';
+  setLang(next);
+  applyTranslations();
+});
 
 // ═══════════════════════════════════════
 // DISCLAIMER
@@ -91,7 +261,6 @@ settingsClose.addEventListener('click', () => settingsModal.classList.add('hidde
 settingsModal.addEventListener('click', e => {
   if (e.target === settingsModal) settingsModal.classList.add('hidden');
 });
-
 apiKeyInput.addEventListener('focus', () => {
   if (apiKeyInput.value.startsWith('•')) apiKeyInput.value = '';
 });
@@ -100,18 +269,18 @@ apiKeySave.addEventListener('click', () => {
   const key = apiKeyInput.value.trim();
   if (!key || key.startsWith('•')) {
     settingsStatus.style.color = 'var(--warn)';
-    settingsStatus.textContent = key.startsWith('•') ? 'La clave no cambió.' : 'Introduce una clave válida.';
+    settingsStatus.textContent = key.startsWith('•') ? t('settings_nochange') : t('settings_invalid');
     return;
   }
   if (!key.startsWith('sk-ant-')) {
     settingsStatus.style.color = 'var(--warn)';
-    settingsStatus.textContent = 'La clave debe empezar por sk-ant-...';
+    settingsStatus.textContent = t('settings_prefix');
     return;
   }
   localStorage.setItem('tarotme_api_key', key);
   actualizarEstadoApiKey();
   settingsStatus.style.color = 'var(--success)';
-  settingsStatus.textContent = '✓ Clave guardada correctamente.';
+  settingsStatus.textContent = t('settings_saved');
   setTimeout(() => settingsModal.classList.add('hidden'), 1400);
 });
 
@@ -120,18 +289,18 @@ apiKeyClear.addEventListener('click', () => {
   apiKeyInput.value = '';
   actualizarEstadoApiKey();
   settingsStatus.style.color = 'var(--text3)';
-  settingsStatus.textContent = 'Clave eliminada.';
+  settingsStatus.textContent = t('settings_deleted');
 });
 
 function actualizarEstadoApiKey() {
   const tieneKey = !!localStorage.getItem('tarotme_api_key');
   apiDot.classList.toggle('active', tieneKey);
-  apiDot.title = tieneKey ? 'Clave de API configurada' : 'Sin clave de API';
+  apiDot.title = tieneKey ? t('api_dot_on') : t('api_dot_off');
   apiNotice.classList.toggle('hidden', tieneKey);
 }
 
 // ═══════════════════════════════════════
-// NAVEGACIÓN TABS
+// NAVIGATION TABS
 // ═══════════════════════════════════════
 function bindEventos() {
   navTabs.forEach(tab => {
@@ -176,8 +345,12 @@ function bindEventos() {
 }
 
 // ═══════════════════════════════════════
-// CUADRÍCULA DE CARTAS
+// CARDS GRID
 // ═══════════════════════════════════════
+function cardDisplayName(carta) {
+  return getLang() === 'en' ? carta.ingles : carta.nombre;
+}
+
 function renderizarCartas() {
   const cartas = filtrarCartas(state.filtroActivo, state.busqueda);
   noResults.classList.toggle('hidden', cartas.length > 0);
@@ -187,17 +360,17 @@ function renderizarCartas() {
          role="listitem button"
          tabindex="0"
          data-id="${c.id}"
-         aria-label="${c.nombre}"
-         title="${c.nombre}">
+         aria-label="${cardDisplayName(c)}"
+         title="${cardDisplayName(c)}">
       <div class="card-img-wrap">
         <img src="${c.imagen}"
-             alt="${c.nombre}"
+             alt="${cardDisplayName(c)}"
              loading="lazy"
              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
         <div class="card-img-placeholder" style="display:none">🃏</div>
       </div>
       <div class="card-footer">
-        <span class="card-nombre">${c.nombre}</span>
+        <span class="card-nombre">${cardDisplayName(c)}</span>
         <span class="card-palo-badge">${etiquetaPalo(c)}</span>
       </div>
     </div>
@@ -215,46 +388,67 @@ function renderizarCartas() {
 }
 
 function etiquetaPalo(carta) {
-  if (carta.arcana === 'mayor') return 'Arcano Mayor';
-  const palos = { bastos: '🔥 Bastos', copas: '💧 Copas', espadas: '💨 Espadas', oros: '🌿 Oros' };
-  return palos[carta.palo] || carta.palo;
+  if (carta.arcana === 'mayor') return t('badge_mayor');
+  const map = {
+    bastos:   t('badge_bastos'),
+    copas:    t('badge_copas'),
+    espadas:  t('badge_espadas'),
+    oros:     t('badge_oros'),
+  };
+  return map[carta.palo] || carta.palo;
 }
 
 // ═══════════════════════════════════════
-// MODAL DETALLE DE CARTA
+// CARD DETAIL MODAL
 // ═══════════════════════════════════════
 function abrirCartaDetalle(id) {
   const carta = CARTAS.find(c => c.id === id);
   if (!carta) return;
 
+  const lang  = getLang();
+  const enData = CARDS_EN[id] || {};
+
   $('card-detail-img').src = carta.imagen;
-  $('card-detail-img').alt = carta.nombre;
-  $('card-detail-img').onerror = function() { this.src = ''; this.alt = ''; };
-  $('card-detail-numero').textContent = `${carta.arcana === 'mayor' ? 'Arcano Mayor · ' : ''}${carta.numero !== carta.nombre ? carta.numero : ''}`;
-  $('card-modal-title').textContent = carta.nombre;
-  $('card-detail-ingles').textContent = carta.ingles;
+  $('card-detail-img').alt = lang === 'en' ? carta.ingles : carta.nombre;
+  $('card-detail-img').onerror = function() { this.src = ''; };
+
+  $('card-detail-numero').textContent =
+    `${carta.arcana === 'mayor' ? (lang === 'en' ? 'Major Arcana · ' : 'Arcano Mayor · ') : ''}${carta.numero !== carta.nombre ? carta.numero : ''}`;
+
+  $('card-modal-title').textContent  = lang === 'en' ? carta.ingles : carta.nombre;
+  $('card-detail-ingles').textContent = lang === 'en' ? carta.nombre : carta.ingles;
 
   const badge = $('card-detail-badge');
   badge.textContent = etiquetaPalo(carta);
   badge.className = `arcana-badge badge-${carta.arcana === 'mayor' ? 'mayor' : carta.palo}`;
 
-  const keywords = $('card-detail-keywords');
-  keywords.innerHTML = carta.palabrasClave.map(k => `<span class="keyword-tag">${k}</span>`).join('');
+  // Keywords
+  const keywords = lang === 'en'
+    ? (enData.keywords || carta.palabrasClave)
+    : carta.palabrasClave;
+  $('card-detail-keywords').innerHTML = keywords
+    .map(k => `<span class="keyword-tag">${k}</span>`).join('');
+
+  // Tab content (get both language sources)
+  const content = {
+    upright:   lang === 'en' ? (enData.upright   || carta.derecho)     : carta.derecho,
+    reversed:  lang === 'en' ? (enData.reversed  || carta.invertido)   : carta.invertido,
+    symbolism: lang === 'en' ? (enData.symbolism || carta.simbolismo)  : carta.simbolismo,
+  };
 
   const tabs = document.querySelectorAll('.card-tab');
-  tabs.forEach(t => t.classList.remove('active'));
+  tabs.forEach(tab => {
+    tab.textContent = t(tab.dataset.i18n || tab.dataset.tab);
+    tab.classList.remove('active');
+  });
   tabs[0].classList.add('active');
-  $('card-tab-content').textContent = carta.derecho;
+  $('card-tab-content').textContent = content.upright;
 
   tabs.forEach(tab => {
     tab.onclick = () => {
-      tabs.forEach(t => t.classList.remove('active'));
+      tabs.forEach(tt => tt.classList.remove('active'));
       tab.classList.add('active');
-      const tipo = tab.dataset.tab;
-      $('card-tab-content').textContent =
-        tipo === 'derecho' ? carta.derecho :
-        tipo === 'invertido' ? carta.invertido :
-        carta.simbolismo;
+      $('card-tab-content').textContent = content[tab.dataset.tab];
     };
   });
 
@@ -263,13 +457,12 @@ function abrirCartaDetalle(id) {
 }
 
 // ═══════════════════════════════════════
-// ZONA DE UPLOAD (SECCIÓN LECTURA)
+// UPLOAD ZONE
 // ═══════════════════════════════════════
 function setupUpload() {
   uploadZone.addEventListener('click', e => {
     if (!e.target.closest('.clear-img-btn')) imageInput.click();
   });
-
   uploadZone.addEventListener('dragover', e => {
     e.preventDefault();
     uploadZone.classList.add('drag-over');
@@ -281,13 +474,11 @@ function setupUpload() {
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith('image/')) procesarImagen(file);
   });
-
   imageInput.addEventListener('change', e => {
     const file = e.target.files[0];
     if (file) procesarImagen(file);
     imageInput.value = '';
   });
-
   clearImageBtn.addEventListener('click', e => {
     e.stopPropagation();
     limpiarImagen();
@@ -301,10 +492,8 @@ function procesarImagen(file) {
     previewImg.src = dataUrl;
     uploadPlaceholder.classList.add('hidden');
     uploadPreview.classList.remove('hidden');
-
-    const base64 = dataUrl.split(',')[1];
-    state.imagenBase64 = base64;
-    state.imagenTipo = file.type;
+    state.imagenBase64 = dataUrl.split(',')[1];
+    state.imagenTipo   = file.type;
     actualizarBotonLeer();
   };
   reader.readAsDataURL(file);
@@ -312,7 +501,7 @@ function procesarImagen(file) {
 
 function limpiarImagen() {
   state.imagenBase64 = null;
-  state.imagenTipo = null;
+  state.imagenTipo   = null;
   previewImg.src = '';
   uploadPreview.classList.add('hidden');
   uploadPlaceholder.classList.remove('hidden');
@@ -320,16 +509,14 @@ function limpiarImagen() {
 }
 
 // ═══════════════════════════════════════
-// SECCIÓN LECTURA — LÓGICA PRINCIPAL
+// READING — MAIN LOGIC
 // ═══════════════════════════════════════
 function setupLectura() {
   questionInput.addEventListener('input', () => {
     charCount.textContent = questionInput.value.length;
     actualizarBotonLeer();
   });
-
   readBtn.addEventListener('click', realizarLectura);
-
   newReadingBtn.addEventListener('click', () => {
     readingResult.classList.add('hidden');
     limpiarImagen();
@@ -343,60 +530,30 @@ function setupLectura() {
 function actualizarBotonLeer() {
   const listo = !!state.imagenBase64 && !state.interpretando;
   readBtn.disabled = !listo;
+  readBtnText.textContent = t(state.interpretando ? 'reading_btn_wait' : 'read_btn');
 }
 
 async function realizarLectura() {
   const apiKey = localStorage.getItem('tarotme_api_key');
-  if (!apiKey) {
-    openSettings();
-    return;
-  }
+  if (!apiKey) { openSettings(); return; }
   if (!state.imagenBase64) return;
 
   const pregunta = questionInput.value.trim();
   state.interpretando = true;
   actualizarBotonLeer();
   readBtn.classList.add('loading');
-  readBtnText.textContent = 'Interpretando…';
 
   readingResult.classList.remove('hidden');
   resultContent.innerHTML = `
     <div class="loading-placeholder">
-      <div class="loading-dots">
-        <span></span><span></span><span></span>
-      </div>
-      <p>La tarotista está leyendo las cartas…</p>
+      <div class="loading-dots"><span></span><span></span><span></span></div>
+      <p>${t('reading_thinking')}</p>
     </div>`;
-
   readingResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
-    const textoUsuario = pregunta
-      ? `Mi pregunta o tema es: "${pregunta}"\n\nPor favor interpreta las cartas que ves en la imagen en relación con este tema.`
-      : 'Por favor interpreta las cartas que ves en la imagen de forma general.';
-
-    const body = {
-      model: 'claude-opus-4-7',
-      max_tokens: 1200,
-      system: SYSTEM_PROMPT_TAROTISTA,
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'image',
-            source: {
-              type: 'base64',
-              media_type: state.imagenTipo,
-              data: state.imagenBase64
-            }
-          },
-          {
-            type: 'text',
-            text: textoUsuario
-          }
-        ]
-      }]
-    };
+    const promptTemplate = pregunta ? t('prompt_with_q') : t('prompt_general');
+    const textoUsuario = promptTemplate.replace('{q}', pregunta);
 
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -404,9 +561,20 @@ async function realizarLectura() {
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
         'content-type': 'application/json',
-        'anthropic-dangerous-direct-browser-access': 'true'
+        'anthropic-dangerous-direct-browser-access': 'true',
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        model: 'claude-opus-4-7',
+        max_tokens: 1200,
+        system: t('system_prompt'),
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: state.imagenTipo, data: state.imagenBase64 } },
+            { type: 'text',  text: textoUsuario }
+          ]
+        }]
+      })
     });
 
     if (!resp.ok) {
@@ -414,58 +582,35 @@ async function realizarLectura() {
       throw new Error(err.error?.message || `Error ${resp.status}: ${resp.statusText}`);
     }
 
-    const data = await resp.json();
-    const texto = data.content?.[0]?.text || 'No se pudo obtener una respuesta.';
+    const data  = await resp.json();
+    const texto = data.content?.[0]?.text || t('err_no_resp');
     mostrarResultado(texto);
 
   } catch (err) {
     resultContent.innerHTML = `
       <p style="color:var(--danger)">
-        ⚠️ <strong>No se pudo completar la lectura.</strong><br>
+        ${t('err_title')}<br>
         <span style="font-size:0.85rem;color:var(--text2)">${err.message}</span>
       </p>
       <p style="font-size:0.82rem;color:var(--text3);margin-top:8px">
-        Comprueba que tu clave de API es válida y que tienes créditos disponibles en <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
+        ${t('err_check')} <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
       </p>`;
   } finally {
     state.interpretando = false;
     readBtn.classList.remove('loading');
-    readBtnText.textContent = 'Interpretar tirada';
     actualizarBotonLeer();
   }
 }
 
 function mostrarResultado(texto) {
-  const parrafos = texto
+  resultContent.innerHTML = texto
     .split(/\n{2,}/)
     .filter(p => p.trim())
     .map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`)
     .join('');
-
-  resultContent.innerHTML = parrafos;
 }
 
 // ═══════════════════════════════════════
-// PROMPT DEL SISTEMA PARA LA IA
-// ═══════════════════════════════════════
-const SYSTEM_PROMPT_TAROTISTA = `Eres una tarotista experimentada con décadas de práctica en la lectura del Tarot Rider-Waite. Tu estilo es cálido, cercano, empático y directo. Hablas en castellano con un lenguaje sencillo y accesible, sin tecnicismos esotéricos innecesarios.
-
-Cuando el usuario te comparte una imagen de su tirada y una pregunta o tema, haz lo siguiente:
-
-1. Identifica las cartas visibles en la imagen y menciona sus nombres en español.
-2. Interpreta el significado de cada carta visible en el contexto de la pregunta o tema planteado.
-3. Ofrece una lectura integrada y coherente que conecte todas las cartas entre sí y con la situación del consultante.
-4. Termina con un mensaje de síntesis: qué te dicen las cartas en general y qué puede ser útil tener en cuenta.
-
-Pautas importantes:
-- Habla en primera persona y de forma cercana: "veo que...", "las cartas me muestran...", "esta carta me dice que...".
-- Sé concreto y relevante para la pregunta planteada. No des respuestas vagas o genéricas.
-- Si no puedes identificar claramente una carta, dilo con naturalidad y trabaja con lo que sí ves.
-- Si la imagen no muestra cartas de tarot o no es legible, indícalo con amabilidad y pide una imagen más clara.
-- No prometas ni predices el futuro con certeza. Usa siempre lenguaje orientativo: "puede que...", "esto sugiere...", "las cartas apuntan a...".
-- Longitud: entre 250 y 450 palabras, bien organizado en párrafos. Ni demasiado corto ni excesivamente largo.`;
-
-// ═══════════════════════════════════════
-// ARRANCAR
+// START
 // ═══════════════════════════════════════
 init();
