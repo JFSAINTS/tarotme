@@ -47,7 +47,11 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  /* Fill entire viewport including notch areas */
+  height: 100%;
+}
 
 /* Starfield canvas (positioned fixed behind everything) */
 #starfield {
@@ -62,8 +66,15 @@ body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
-  min-height: 100vh;
+  /* Use dynamic viewport height so mobile browser chrome is excluded */
+  min-height: 100dvh;
+  min-height: 100vh; /* fallback */
   line-height: 1.6;
+  /* Respect safe areas for notched phones */
+  padding-left:  env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+  /* No horizontal overflow */
+  overflow-x: hidden;
 }
 
 a { color: var(--purple2); text-decoration: none; }
@@ -88,6 +99,9 @@ img { display: block; max-width: 100%; }
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  /* Safe area for notched phones (adds to right/left) */
+  padding-left:  max(20px, env(safe-area-inset-left, 20px));
+  padding-right: max(20px, env(safe-area-inset-right, 20px));
   gap: 16px;
 }
 
@@ -173,6 +187,79 @@ img { display: block; max-width: 100%; }
   border-color: var(--gold);
   color: var(--gold);
 }
+
+/* ── PWA Install button ── */
+.install-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple2) 100%);
+  border: none;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  white-space: nowrap;
+  box-shadow: 0 0 12px rgba(124,58,237,0.4);
+}
+
+.install-btn:hover {
+  background: linear-gradient(135deg, var(--purple2) 0%, var(--gold) 100%);
+  box-shadow: 0 0 18px rgba(201,168,76,0.4);
+  transform: translateY(-1px);
+}
+
+.install-btn .install-icon { font-size: 0.85rem; }
+
+/* Hide label on very small screens, keep icon */
+@media (max-width: 420px) {
+  .install-btn .install-label { display: none; }
+  .install-btn { padding: 0 9px; }
+}
+
+/* ── iOS install tooltip ── */
+.ios-install-tip {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg3);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 14px 40px 14px 16px;
+  font-size: 0.84rem;
+  color: var(--text2);
+  max-width: 320px;
+  width: calc(100% - 32px);
+  text-align: center;
+  z-index: 500;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  line-height: 1.5;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.ios-tip-close {
+  position: absolute;
+  top: 8px; right: 10px;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+}
+.ios-tip-close:hover { color: var(--text); }
 
 .icon-btn {
   position: relative;
@@ -992,21 +1079,54 @@ main {
 .hidden { display: none !important; }
 
 /* ═══════════════════════════════════════
-   RESPONSIVE
+   RESPONSIVE — Mobile / Tablet / Desktop
 ═══════════════════════════════════════ */
-@media (max-width: 480px) {
-  .section-header h1 { font-size: 1.3rem; }
-  .nav-tab { padding: 5px 12px; font-size: 0.82rem; }
-  .logo-text { font-size: 1rem; }
-  .app-header { padding: 0 12px; }
-  main { padding: 20px 10px 50px; }
-  .reading-container { gap: 16px; }
-  .btn-read { font-size: 0.9rem; padding: 12px 24px; }
+
+/* ── Tablet (481px – 768px) ── */
+@media (min-width: 481px) and (max-width: 768px) {
+  :root { --header-h: 56px; }
+  .app-header { padding: 0 16px; }
+  main { padding: 24px 16px 60px; }
+  .section-header h1 { font-size: 1.5rem; }
+  .reading-container { max-width: 600px; }
 }
 
+/* ── Mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+  :root { --header-h: 52px; }
+  .section-header h1 { font-size: 1.3rem; }
+  .section-subtitle { font-size: 0.82rem; }
+  .nav-tab { padding: 5px 10px; font-size: 0.8rem; }
+  .logo-text { font-size: 1rem; }
+  .app-header {
+    padding-left:  max(12px, env(safe-area-inset-left, 12px));
+    padding-right: max(12px, env(safe-area-inset-right, 12px));
+    gap: 8px;
+  }
+  main { padding: 16px 12px 60px; }
+  /* Safe area bottom (home bar on notched phones) */
+  footer { padding-bottom: max(20px, env(safe-area-inset-bottom, 20px)); }
+  .reading-container { gap: 16px; }
+  .btn-read { font-size: 0.9rem; padding: 12px 24px; }
+  .upload-zone { min-height: 140px; }
+  /* Filter pills wrap on small screens */
+  .filter-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+  .filter-pills { flex-wrap: wrap; }
+  /* Modal full-screen on mobile */
+  .card-detail-box { max-height: 92dvh; max-height: 92vh; }
+  .settings-box { width: 95%; }
+}
+
+/* ── Very small (≤ 360px) ── */
 @media (max-width: 360px) {
   .filter-pills { gap: 4px; }
-  .pill { padding: 4px 10px; font-size: 0.78rem; }
+  .pill { padding: 4px 8px; font-size: 0.75rem; }
+  .nav-tab { padding: 4px 8px; font-size: 0.76rem; }
+}
+
+/* ── Large desktop (≥ 1280px) ── */
+@media (min-width: 1280px) {
+  main { max-width: 1200px; margin: 0 auto; }
 }
 
 /* ═══════════════════════════════════════

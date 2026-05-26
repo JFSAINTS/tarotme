@@ -611,6 +611,72 @@ function mostrarResultado(texto) {
 }
 
 // ═══════════════════════════════════════
+// PWA — Service Worker + Install Button
+// ═══════════════════════════════════════
+(function initPWA() {
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+
+  const installBtn = $('install-btn');
+  const iosTip     = $('ios-install-tip');
+  const iosTipText = $('ios-tip-text');
+
+  if (!installBtn) return;
+
+  const isIOS       = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = () =>
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
+  let deferredPrompt = null;
+
+  // Show button on iOS (native install via Safari share sheet)
+  if (isIOS && !isStandalone()) {
+    installBtn.classList.remove('hidden');
+  }
+
+  // Show button on Chrome/Android when prompt is available
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!isStandalone()) installBtn.classList.remove('hidden');
+  });
+
+  // Hide button once app is installed
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    installBtn.classList.add('hidden');
+    if (iosTip) iosTip.classList.add('hidden');
+  });
+
+  // Button click handler
+  installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      // Chrome / Android: native install prompt
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        deferredPrompt = null;
+        installBtn.classList.add('hidden');
+      }
+    } else if (isIOS) {
+      // iOS: toggle instructions tooltip
+      if (iosTip && iosTipText) {
+        iosTipText.textContent = t('ios_install_tip');
+        iosTip.classList.toggle('hidden');
+      }
+    }
+  });
+
+  // Hide if already running as standalone (already installed)
+  if (isStandalone()) {
+    installBtn.classList.add('hidden');
+  }
+})();
+
+// ═══════════════════════════════════════
 // START
 // ═══════════════════════════════════════
 init();

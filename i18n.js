@@ -79,6 +79,10 @@ const UI = {
     prompt_with_q:    'Mi pregunta o tema es: "{q}"\n\nPor favor interpreta las cartas que ves en la imagen en relación con este tema.',
     prompt_general:   'Por favor interpreta las cartas que ves en la imagen de forma general.',
 
+    // PWA install
+    install_btn:      'Instalar',
+    ios_install_tip:  'En Safari, pulsa el botón de compartir 〔⬆〕 en la barra inferior y selecciona «Añadir a la pantalla de inicio».',
+
     // Footer
     footer_images: 'Imágenes:',
     footer_source: 'Wikimedia Commons',
@@ -448,6 +452,10 @@ Pautas importantes:
     // Reading AI prompt pieces
     prompt_with_q:    'My question or topic is: "{q}"\n\nPlease interpret the cards you see in the image in relation to this topic.',
     prompt_general:   'Please interpret the cards you see in the image in a general way.',
+
+    // PWA install
+    install_btn:      'Install',
+    ios_install_tip:  'In Safari, tap the share button 〔⬆〕 in the bottom bar and select "Add to Home Screen".',
 
     // Footer
     footer_images: 'Images:',

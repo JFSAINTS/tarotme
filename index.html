@@ -2,13 +2,18 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="referrer" content="no-referrer-when-downgrade">
   <title>TarotMe — Tarot Rider-Waite</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0a0a14">
   <meta name="description" content="Rider-Waite Tarot library — 78 cards and personalized AI readings. / Biblioteca del Tarot Rider-Waite — 78 cartas y lecturas con IA.">
+  <!-- PWA: Apple-specific -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TarotMe">
+  <meta name="mobile-web-app-capable" content="yes">
 </head>
 <body>
 
@@ -90,6 +95,10 @@
       <button class="nav-tab" data-section="faq" data-i18n="nav_faq"></button>
     </nav>
     <div class="header-actions">
+      <button id="install-btn" class="install-btn hidden" aria-label="Install app / Instalar app">
+        <span class="install-icon">⬇</span>
+        <span class="install-label" data-i18n="install_btn"></span>
+      </button>
       <button id="lang-btn" class="lang-btn" aria-label="Switch language / Cambiar idioma" title="ES / EN">
         <span id="lang-label">ES</span>
       </button>
@@ -97,6 +106,11 @@
         <span id="api-dot" class="api-dot"></span>
         ⚙️
       </button>
+    </div>
+    <!-- iOS install tip (shown only on iOS) -->
+    <div id="ios-install-tip" class="ios-install-tip hidden" role="tooltip">
+      <span id="ios-tip-text"></span>
+      <button class="ios-tip-close" onclick="document.getElementById('ios-install-tip').classList.add('hidden')">✕</button>
     </div>
   </header>
 
