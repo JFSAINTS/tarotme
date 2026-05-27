@@ -17,15 +17,15 @@ const UI = {
 
     // Settings
     settings_title:   '⚙️ Configuración',
-    settings_body:    'Para usar la lectura personalizada con IA necesitas una clave de API de Anthropic. Tu clave se guarda solo en este dispositivo.',
-    settings_label:   'Clave de API de Anthropic',
-    settings_link:    'Obtener clave en console.anthropic.com →',
+    settings_body:    'Para usar la lectura personalizada con IA necesitas una clave de API de OpenRouter (da acceso a Qwen). Tu clave se guarda solo en este dispositivo.',
+    settings_label:   'Clave de API de OpenRouter',
+    settings_link:    'Obtener clave gratuita en openrouter.ai/keys →',
     settings_save:    'Guardar',
     settings_clear:   'Eliminar clave',
     settings_saved:   '✓ Clave guardada correctamente.',
     settings_nochange:'La clave no cambió.',
     settings_invalid: 'Introduce una clave válida.',
-    settings_prefix:  'La clave debe empezar por sk-ant-…',
+    settings_prefix:  'La clave debe empezar por sk-or-v1-…',
     settings_deleted: 'Clave eliminada.',
 
     // Cards section
@@ -54,7 +54,7 @@ const UI = {
     reading_title:    'Tu Lectura Personalizada',
     reading_subtitle: 'Sube una foto de tu tirada y escribe tu pregunta. La IA interpretará las cartas como un tarotista experimentado.',
     api_notice_title: 'Clave de API necesaria',
-    api_notice_body:  'Para usar la lectura con IA necesitas configurar tu clave de API de Anthropic. Es gratuita para uso personal.',
+    api_notice_body:  'Para usar la lectura con IA necesitas configurar tu clave de API de OpenRouter (gratuita). Accede a openrouter.ai/keys para obtenerla.',
     api_notice_btn:   'Configurar ahora',
     step1_label:      'Fotografía tu tirada',
     upload_title:     'Arrastra aquí la foto de tu tirada',
@@ -100,15 +100,15 @@ const UI = {
             q: '¿Necesito pagar para usar TarotMe?',
             open: true,
             a: `<p>La <strong>biblioteca de las 78 cartas</strong> es completamente gratuita y no requiere ninguna cuenta ni clave. Puedes explorar todas las cartas, sus significados y simbolismo sin límite.</p>
-<p>La <strong>lectura personalizada con IA</strong> requiere tu propia clave de API de Anthropic. Esta clave se usa directamente desde tu navegador y se guarda solo en tu dispositivo.</p>`
+<p>La <strong>lectura personalizada con IA</strong> requiere tu propia clave de API de OpenRouter. Esta clave se usa directamente desde tu navegador y se guarda solo en tu dispositivo.</p>`
           },
           {
             q: '¿Qué modelo de IA usa TarotMe?',
-            a: `<p>TarotMe utiliza <strong>Claude claude-opus-4-7</strong> de Anthropic, uno de los modelos más avanzados disponibles. Está configurado para actuar como tarotista experimentada, interpretando las cartas en el idioma seleccionado con un estilo cálido y cercano.</p>`
+            a: `<p>TarotMe utiliza <strong>Qwen 2.5 VL 72B</strong> a través de <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a>, un potente modelo de visión y lenguaje. Está configurado para actuar como tarotista experimentada, interpretando las cartas en el idioma seleccionado con un estilo cálido y cercano.</p>`
           },
           {
             q: '¿Es segura mi clave de API?',
-            a: `<p>Tu clave de API se guarda <strong>únicamente en tu dispositivo</strong> (localStorage del navegador) y nunca se envía a ningún servidor de TarotMe. Las solicitudes van directamente desde tu navegador a la API de Anthropic.</p>
+            a: `<p>Tu clave de API se guarda <strong>únicamente en tu dispositivo</strong> (localStorage del navegador) y nunca se envía a ningún servidor de TarotMe. Las solicitudes van directamente desde tu navegador a la API de OpenRouter.</p>
 <p>⚠️ Nunca compartas tu clave con nadie ni la introduzcas en páginas desconocidas.</p>`
           }
         ]
@@ -119,39 +119,38 @@ const UI = {
           {
             q: '¿Cuántas lecturas puedo hacer gratis?',
             open: true,
-            a: `<p>Anthropic ofrece <strong>aproximadamente $5 de crédito inicial</strong> para cuentas nuevas. No hay una cuota fija diaria de consultas gratuitas: el crédito se va consumiendo por uso.</p>
+            a: `<p>OpenRouter ofrece <strong>crédito gratuito</strong> para cuentas nuevas y algunos modelos tienen cuota gratuita diaria. El modelo Qwen 2.5 VL es muy económico por uso.</p>
 <div class="faq-table-wrap"><table class="faq-table">
 <thead><tr><th>Concepto</th><th>Detalle</th></tr></thead>
 <tbody>
-<tr><td>Crédito inicial (cuenta nueva)</td><td>~$5 USD (uso único)</td></tr>
-<tr><td>Coste por lectura (aprox.)</td><td>$0.05 – $0.12 USD</td></tr>
-<tr><td>Lecturas estimadas con $5</td><td><strong>40 – 100 lecturas</strong></td></tr>
-<tr><td>Cuota diaria gratuita permanente</td><td>❌ No existe</td></tr>
+<tr><td>Crédito inicial (cuenta nueva)</td><td>Disponible al registrarse</td></tr>
+<tr><td>Coste por lectura (aprox.)</td><td>$0.01 – $0.03 USD</td></tr>
+<tr><td>Lecturas estimadas con $5</td><td><strong>150 – 500 lecturas</strong></td></tr>
 </tbody></table></div>
-<p class="faq-note">💡 El coste varía según la longitud de la pregunta y la respuesta generada.</p>`
+<p class="faq-note">💡 El coste es muy bajo gracias a la eficiencia del modelo Qwen.</p>`
           },
           {
-            q: '¿Qué pasa cuando se acaba el crédito gratuito?',
-            a: `<p>Una vez consumidos los $5 de crédito inicial, recibirás un error de tipo <code>insufficient_quota</code>. Para seguir usando la lectura con IA necesitarás añadir un método de pago en <a href="https://console.anthropic.com/billing" target="_blank" rel="noopener">console.anthropic.com/billing</a>.</p>
-<p>La <strong>tarifa de Claude claude-opus-4-7</strong> es de pago por uso:</p>
+            q: '¿Qué pasa cuando se acaba el crédito?',
+            a: `<p>Recibirás un error de tipo <code>insufficient_credits</code>. Para seguir usando la lectura con IA añade crédito en <a href="https://openrouter.ai/credits" target="_blank" rel="noopener">openrouter.ai/credits</a>.</p>
+<p>La <strong>tarifa de Qwen 2.5 VL 72B</strong> vía OpenRouter es de pago por uso:</p>
 <div class="faq-table-wrap"><table class="faq-table">
 <thead><tr><th>Tipo de token</th><th>Precio por millón</th><th>Por lectura típica</th></tr></thead>
 <tbody>
-<tr><td>Entrada</td><td>$15 / M tokens</td><td>~$0.01</td></tr>
-<tr><td>Salida</td><td>$75 / M tokens</td><td>~$0.07</td></tr>
-<tr><td><strong>Total por lectura</strong></td><td colspan="2"><strong>~$0.08 USD</strong></td></tr>
+<tr><td>Entrada</td><td>~$0.40 / M tokens</td><td>~$0.005</td></tr>
+<tr><td>Salida</td><td>~$0.40 / M tokens</td><td>~$0.015</td></tr>
+<tr><td><strong>Total por lectura</strong></td><td colspan="2"><strong>~$0.02 USD</strong></td></tr>
 </tbody></table></div>
-<p class="faq-note">Con $10 de recarga puedes hacer aproximadamente 125 lecturas.</p>`
+<p class="faq-note">Con $5 puedes hacer más de 200 lecturas.</p>`
           },
           {
-            q: '¿Cómo obtengo una clave de API de Anthropic?',
+            q: '¿Cómo obtengo una clave de API de OpenRouter?',
             a: `<ol class="faq-steps">
-<li>Ve a <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> y crea una cuenta gratuita.</li>
-<li>Accede a <strong>Settings → API Keys</strong> y pulsa <strong>Create Key</strong>.</li>
-<li>Copia la clave (empieza por <code>sk-ant-</code>). Solo se muestra una vez.</li>
+<li>Ve a <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a> y crea una cuenta gratuita.</li>
+<li>Accede a <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a> y pulsa <strong>Create Key</strong>.</li>
+<li>Copia la clave (empieza por <code>sk-or-v1-</code>). Solo se muestra una vez.</li>
 <li>En TarotMe, pulsa el icono ⚙️ en la cabecera y pega tu clave.</li>
 </ol>
-<p class="faq-note">🎁 Las cuentas nuevas reciben ~$5 de crédito automáticamente, sin introducir datos de pago.</p>`
+<p class="faq-note">🎁 Las cuentas nuevas reciben crédito inicial gratuito sin tarjeta de crédito.</p>`
           }
         ]
       },
@@ -160,15 +159,15 @@ const UI = {
         items: [
           {
             q: 'Error: <code>invalid_api_key</code>',
-            a: '<p>La clave introducida no es válida. Comprueba que empieza por <code>sk-ant-</code> y que la copiaste completa sin espacios extra. Genera una nueva en <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys</a>.</p>'
+            a: '<p>La clave introducida no es válida. Comprueba que empieza por <code>sk-or-v1-</code> y que la copiaste completa sin espacios extra. Genera una nueva en <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>.</p>'
           },
           {
-            q: 'Error: <code>insufficient_quota</code>',
-            a: '<p>Has agotado tu crédito. Añade un método de pago en <a href="https://console.anthropic.com/billing" target="_blank" rel="noopener">console.anthropic.com/billing</a>.</p>'
+            q: 'Error: <code>insufficient_credits</code>',
+            a: '<p>Has agotado tu crédito. Añade saldo en <a href="https://openrouter.ai/credits" target="_blank" rel="noopener">openrouter.ai/credits</a>.</p>'
           },
           {
-            q: 'Error: <code>overloaded_error</code>',
-            a: '<p>La API de Anthropic está temporalmente sobrecargada. Es un problema del lado del servidor, no de tu clave. Espera unos segundos y vuelve a intentarlo.</p>'
+            q: 'Error: <code>rate_limit_exceeded</code>',
+            a: '<p>Has superado el límite de peticiones por minuto. Es un límite temporal del servidor. Espera unos segundos y vuelve a intentarlo.</p>'
           }
         ]
       },
@@ -391,15 +390,15 @@ Pautas importantes:
 
     // Settings
     settings_title:   '⚙️ Settings',
-    settings_body:    'To use the personalized AI reading you need an Anthropic API key. Your key is stored only on this device.',
-    settings_label:   'Anthropic API Key',
-    settings_link:    'Get your key at console.anthropic.com →',
+    settings_body:    'To use the personalized AI reading you need an OpenRouter API key (gives access to Qwen). Your key is stored only on this device.',
+    settings_label:   'OpenRouter API Key',
+    settings_link:    'Get your free key at openrouter.ai/keys →',
     settings_save:    'Save',
     settings_clear:   'Remove key',
     settings_saved:   '✓ Key saved successfully.',
     settings_nochange:'The key did not change.',
     settings_invalid: 'Please enter a valid key.',
-    settings_prefix:  'The key must start with sk-ant-…',
+    settings_prefix:  'The key must start with sk-or-v1-…',
     settings_deleted: 'Key removed.',
 
     // Cards section
@@ -428,7 +427,7 @@ Pautas importantes:
     reading_title:    'Your Personalized Reading',
     reading_subtitle: 'Upload a photo of your spread and write your question. The AI will interpret the cards like an experienced tarot reader.',
     api_notice_title: 'API Key required',
-    api_notice_body:  'To use the AI reading you need to configure your Anthropic API key. It is free for personal use.',
+    api_notice_body:  'To use the AI reading you need to configure your OpenRouter API key (free). Get it at openrouter.ai/keys.',
     api_notice_btn:   'Configure now',
     step1_label:      'Photograph your spread',
     upload_title:     'Drag your spread photo here',
@@ -474,15 +473,15 @@ Pautas importantes:
             q: 'Do I need to pay to use TarotMe?',
             open: true,
             a: `<p>The <strong>78-card library</strong> is completely free and requires no account or key. You can explore all cards, their meanings and symbolism without any limit.</p>
-<p>The <strong>personalized AI reading</strong> requires your own Anthropic API key. This key is used directly from your browser and stored only on your device.</p>`
+<p>The <strong>personalized AI reading</strong> requires your own OpenRouter API key. This key is used directly from your browser and stored only on your device.</p>`
           },
           {
             q: 'Which AI model does TarotMe use?',
-            a: `<p>TarotMe uses <strong>Claude claude-opus-4-7</strong> by Anthropic, one of the most advanced models available. It is configured to act as an experienced tarot reader, interpreting cards in your selected language with a warm and personal style.</p>`
+            a: `<p>TarotMe uses <strong>Qwen 2.5 VL 72B</strong> via <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a>, a powerful vision-language model. It is configured to act as an experienced tarot reader, interpreting cards in your selected language with a warm and personal style.</p>`
           },
           {
             q: 'Is my API key safe?',
-            a: `<p>Your API key is stored <strong>only on your device</strong> (browser localStorage) and is never sent to any TarotMe server. Requests go directly from your browser to Anthropic's API.</p>
+            a: `<p>Your API key is stored <strong>only on your device</strong> (browser localStorage) and is never sent to any TarotMe server. Requests go directly from your browser to the OpenRouter API.</p>
 <p>⚠️ Never share your key with anyone or enter it on unknown sites.</p>`
           }
         ]
@@ -493,39 +492,38 @@ Pautas importantes:
           {
             q: 'How many free readings can I do?',
             open: true,
-            a: `<p>Anthropic offers <strong>approximately $5 of initial credit</strong> for new accounts. There is no fixed daily quota of free queries — credit is consumed as you use it.</p>
+            a: `<p>OpenRouter offers <strong>free initial credit</strong> for new accounts and some models have a daily free quota. The Qwen 2.5 VL model is very affordable.</p>
 <div class="faq-table-wrap"><table class="faq-table">
 <thead><tr><th>Item</th><th>Details</th></tr></thead>
 <tbody>
-<tr><td>Initial credit (new account)</td><td>~$5 USD (one-time)</td></tr>
-<tr><td>Cost per reading (approx.)</td><td>$0.05 – $0.12 USD</td></tr>
-<tr><td>Estimated readings with $5</td><td><strong>40 – 100 readings</strong></td></tr>
-<tr><td>Permanent daily free quota</td><td>❌ Does not exist</td></tr>
+<tr><td>Initial credit (new account)</td><td>Available on sign-up</td></tr>
+<tr><td>Cost per reading (approx.)</td><td>$0.01 – $0.03 USD</td></tr>
+<tr><td>Estimated readings with $5</td><td><strong>150 – 500 readings</strong></td></tr>
 </tbody></table></div>
-<p class="faq-note">💡 Cost varies depending on the length of the question and the generated response.</p>`
+<p class="faq-note">💡 Cost is very low thanks to Qwen's efficiency.</p>`
           },
           {
-            q: 'What happens when the free credit runs out?',
-            a: `<p>Once the $5 initial credit is used, you will receive an <code>insufficient_quota</code> error. To continue using AI readings you will need to add a payment method at <a href="https://console.anthropic.com/billing" target="_blank" rel="noopener">console.anthropic.com/billing</a>.</p>
-<p><strong>Claude claude-opus-4-7</strong> pricing:</p>
+            q: 'What happens when the credit runs out?',
+            a: `<p>You will receive an <code>insufficient_credits</code> error. To continue using AI readings add credit at <a href="https://openrouter.ai/credits" target="_blank" rel="noopener">openrouter.ai/credits</a>.</p>
+<p><strong>Qwen 2.5 VL 72B</strong> pricing via OpenRouter:</p>
 <div class="faq-table-wrap"><table class="faq-table">
 <thead><tr><th>Token type</th><th>Price per million</th><th>Per typical reading</th></tr></thead>
 <tbody>
-<tr><td>Input</td><td>$15 / M tokens</td><td>~$0.01</td></tr>
-<tr><td>Output</td><td>$75 / M tokens</td><td>~$0.07</td></tr>
-<tr><td><strong>Total per reading</strong></td><td colspan="2"><strong>~$0.08 USD</strong></td></tr>
+<tr><td>Input</td><td>~$0.40 / M tokens</td><td>~$0.005</td></tr>
+<tr><td>Output</td><td>~$0.40 / M tokens</td><td>~$0.015</td></tr>
+<tr><td><strong>Total per reading</strong></td><td colspan="2"><strong>~$0.02 USD</strong></td></tr>
 </tbody></table></div>
-<p class="faq-note">With a $10 top-up you can do approximately 125 readings.</p>`
+<p class="faq-note">With $5 you can do more than 200 readings.</p>`
           },
           {
-            q: 'How do I get an Anthropic API key?',
+            q: 'How do I get an OpenRouter API key?',
             a: `<ol class="faq-steps">
-<li>Go to <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a> and create a free account.</li>
-<li>Go to <strong>Settings → API Keys</strong> and click <strong>Create Key</strong>.</li>
-<li>Copy the key (starts with <code>sk-ant-</code>). It is only shown once.</li>
+<li>Go to <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a> and create a free account.</li>
+<li>Go to <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a> and click <strong>Create Key</strong>.</li>
+<li>Copy the key (starts with <code>sk-or-v1-</code>). It is only shown once.</li>
 <li>In TarotMe, click the ⚙️ icon in the header and paste your key.</li>
 </ol>
-<p class="faq-note">🎁 New accounts receive ~$5 credit automatically, no payment info required.</p>`
+<p class="faq-note">🎁 New accounts receive free initial credit with no credit card required.</p>`
           }
         ]
       },
@@ -534,15 +532,15 @@ Pautas importantes:
         items: [
           {
             q: 'Error: <code>invalid_api_key</code>',
-            a: '<p>The entered key is not valid. Make sure it starts with <code>sk-ant-</code> and was copied completely without extra spaces. Generate a new one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys</a>.</p>'
+            a: '<p>The entered key is not valid. Make sure it starts with <code>sk-or-v1-</code> and was copied completely without extra spaces. Generate a new one at <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a>.</p>'
           },
           {
-            q: 'Error: <code>insufficient_quota</code>',
-            a: '<p>Your credit is exhausted. Add a payment method at <a href="https://console.anthropic.com/billing" target="_blank" rel="noopener">console.anthropic.com/billing</a>.</p>'
+            q: 'Error: <code>insufficient_credits</code>',
+            a: '<p>Your credit is exhausted. Add funds at <a href="https://openrouter.ai/credits" target="_blank" rel="noopener">openrouter.ai/credits</a>.</p>'
           },
           {
-            q: 'Error: <code>overloaded_error</code>',
-            a: '<p>The Anthropic API is temporarily overloaded. This is a server-side issue, not your key. Wait a few seconds and try again.</p>'
+            q: 'Error: <code>rate_limit_exceeded</code>',
+            a: '<p>You have exceeded the request rate limit. This is a temporary server-side limit, not an issue with your key. Wait a few seconds and try again.</p>'
           }
         ]
       },

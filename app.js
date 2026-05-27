@@ -360,7 +360,7 @@ apiKeySave.addEventListener('click', async () => {
     settingsStatus.textContent = key.startsWith('•') ? t('settings_nochange') : t('settings_invalid');
     return;
   }
-  if (!key.startsWith('sk-ant-')) {
+  if (!key.startsWith('sk-or-v1-')) {
     settingsStatus.style.color = 'var(--warn)';
     settingsStatus.textContent = t('settings_prefix');
     return;
@@ -643,25 +643,27 @@ async function realizarLectura() {
     const promptTemplate = pregunta ? t('prompt_with_q') : t('prompt_general');
     const textoUsuario = promptTemplate.replace('{q}', pregunta);
 
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'content-type': 'application/json',
-        'anthropic-dangerous-direct-browser-access': 'true',
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://jfsaints.github.io/tarotme/',
+        'X-Title': 'TarotMe',
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-7',
+        model: 'qwen/qwen2.5-vl-72b-instruct',
         max_tokens: 1200,
-        system: t('system_prompt'),
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: state.imagenTipo, data: state.imagenBase64 } },
-            { type: 'text',  text: textoUsuario }
-          ]
-        }]
+        messages: [
+          { role: 'system', content: t('system_prompt') },
+          {
+            role: 'user',
+            content: [
+              { type: 'image_url', image_url: { url: `data:${state.imagenTipo};base64,${state.imagenBase64}` } },
+              { type: 'text', text: textoUsuario }
+            ]
+          }
+        ]
       })
     });
 
@@ -671,7 +673,7 @@ async function realizarLectura() {
     }
 
     const data  = await resp.json();
-    const texto = data.content?.[0]?.text || t('err_no_resp');
+    const texto = data.choices?.[0]?.message?.content || t('err_no_resp');
     mostrarResultado(texto);
 
   } catch (err) {
@@ -681,7 +683,7 @@ async function realizarLectura() {
         <span style="font-size:0.85rem;color:var(--text2)">${err.message}</span>
       </p>
       <p style="font-size:0.82rem;color:var(--text3);margin-top:8px">
-        ${t('err_check')} <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>.
+        ${t('err_check')} <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a>.
       </p>`;
   } finally {
     state.interpretando = false;
