@@ -37,6 +37,7 @@ La clave se guarda solo en tu dispositivo (localStorage) y nunca en ningún serv
 
 - Las cuentas nuevas reciben ~$5 de crédito gratuito (~40–100 lecturas)
 - Sin cuota diaria gratuita permanente (es pago por uso)
+- Tambien puedes usar API de Qwen gratis en https://openrouter.ai/
 
 ## 🃏 Imágenes
 
