@@ -126,6 +126,7 @@ const noResults        = $('no-results');
 
 const uploadZone       = $('upload-zone');
 const imageInput       = $('image-input');
+const cameraInput      = $('camera-input');
 const uploadPlaceholder= $('upload-placeholder');
 const uploadPreview    = $('upload-preview');
 const previewImg       = $('preview-img');
@@ -548,8 +549,19 @@ function abrirCartaDetalle(id) {
 // UPLOAD ZONE
 // ═══════════════════════════════════════
 function setupUpload() {
+  // Clicking the zone opens gallery (unless clicking a button inside it)
   uploadZone.addEventListener('click', e => {
-    if (!e.target.closest('.clear-img-btn')) imageInput.click();
+    if (e.target.closest('.upload-action-btn') || e.target.closest('.clear-img-btn')) return;
+    imageInput.click();
+  });
+
+  // Explicit gallery / camera buttons
+  $('gallery-btn')?.addEventListener('click', e => { e.stopPropagation(); imageInput.click(); });
+  $('camera-btn')?.addEventListener('click',  e => { e.stopPropagation(); cameraInput.click(); });
+  cameraInput?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (file) procesarImagen(file);
+    cameraInput.value = '';
   });
   uploadZone.addEventListener('dragover', e => {
     e.preventDefault();
@@ -643,6 +655,13 @@ async function realizarLectura() {
     const promptTemplate = pregunta ? t('prompt_with_q') : t('prompt_general');
     const textoUsuario = promptTemplate.replace('{q}', pregunta);
 
+    // Explicit language instruction so the AI always replies in the app's active language
+    const langCode        = getLang();
+    const langInstruction = langCode === 'es'
+      ? 'IMPORTANTE: Responde siempre en español, independientemente del idioma de la pregunta.'
+      : 'IMPORTANT: Always respond in English, regardless of the language of the question.';
+    const systemPrompt    = t('system_prompt') + '\n\n' + langInstruction;
+
     const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -655,7 +674,7 @@ async function realizarLectura() {
         model: 'qwen/qwen2.5-vl-72b-instruct',
         max_tokens: 1200,
         messages: [
-          { role: 'system', content: t('system_prompt') },
+          { role: 'system', content: systemPrompt },
           {
             role: 'user',
             content: [

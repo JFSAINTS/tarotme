@@ -182,11 +182,22 @@
             <span data-i18n="step1_label"></span>
           </div>
           <div class="upload-zone" id="upload-zone" role="button" tabindex="0">
-            <input type="file" id="image-input" accept="image/*" hidden>
+            <input type="file" id="image-input"  accept="image/*" hidden>
+            <input type="file" id="camera-input" accept="image/*" capture="environment" hidden>
             <div class="upload-placeholder" id="upload-placeholder">
               <div class="upload-icon">🃏</div>
               <p id="upload-title-text"></p>
               <p class="upload-hint" data-i18n="upload_hint"></p>
+              <div class="upload-actions">
+                <button class="upload-action-btn" id="gallery-btn" type="button">
+                  <span class="upload-action-icon">🖼️</span>
+                  <span data-i18n="upload_gallery"></span>
+                </button>
+                <button class="upload-action-btn" id="camera-btn" type="button">
+                  <span class="upload-action-icon">📷</span>
+                  <span data-i18n="upload_camera"></span>
+                </button>
+              </div>
             </div>
             <div class="upload-preview hidden" id="upload-preview">
               <img id="preview-img" src="" alt="Spread preview">
