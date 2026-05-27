@@ -1,5 +1,5 @@
 // TarotMe — Service Worker
-const CACHE = 'tarotme-v2';
+const CACHE = 'tarotme-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -8,7 +8,10 @@ const ASSETS = [
   './styles.css',
   './cards-data.js',
   './cards-en.js',
-  './manifest.json'
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-512-maskable.png'
 ];
 
 self.addEventListener('install', e => {
