@@ -6,6 +6,16 @@ Biblioteca interactiva de las 78 cartas del Tarot Rider-Waite y lecturas persona
 
 ---
 
+## 🕊️ Sin ánimo de lucro · Libre distribución
+
+TarotMe es un proyecto **sin ánimo de lucro** y de **libre distribución**. Puedes usarlo, compartirlo y modificarlo libremente. No hay suscripciones, publicidad ni datos que vender.
+
+**El valor y la utilidad de la aplicación residen en ti** — en la intención con la que barajas las cartas, en las preguntas que traes a la tirada, en cómo integras lo que las cartas te muestran. La tecnología aquí es solo un espejo que refleja lo que tú ya sabes.
+
+> Las lecturas no predicen ni determinan nada. Solo tú puedes evaluar su utilidad y decidir qué hacer con lo que lees.
+
+---
+
 ## ✨ Características
 
 - **78 cartas** del Tarot Rider-Waite con imagen, significado derecho, invertido y simbolismo en español
@@ -30,14 +40,15 @@ python -m http.server 4567
 # → http://localhost:4567
 ```
 
-## 🔑 API Key
+## 🔑 API Keys
 
-La lectura con IA requiere tu propia clave de API de [Anthropic](https://console.anthropic.com/settings/keys).  
-La clave se guarda solo en tu dispositivo (localStorage) y nunca en ningún servidor.
+La lectura con IA requiere tu propia clave de API de [OpenRouter](https://openrouter.ai/keys).  
+Las claves se guardan **solo en tu dispositivo** (localStorage + IndexedDB) y nunca en ningún servidor.
 
-- Las cuentas nuevas reciben ~$5 de crédito gratuito (~40–100 lecturas)
-- Sin cuota diaria gratuita permanente (es pago por uso)
-- Tambien puedes usar API de Qwen gratis en https://openrouter.ai/
+- Puedes guardar **múltiples claves** con alias y alternar entre ellas desde los ajustes ⚙️
+- Las cuentas nuevas de OpenRouter reciben crédito gratuito inicial
+- Coste aproximado por lectura: **~$0.02 USD** con el modelo Qwen 2.5 VL 72B
+- Con $5 puedes hacer más de 200 lecturas
 
 ## 🃏 Imágenes
 

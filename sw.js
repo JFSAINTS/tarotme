@@ -1,5 +1,5 @@
 // TarotMe — Service Worker
-const CACHE = 'tarotme-v5';
+const CACHE = 'tarotme-v6';
 const ASSETS = [
   './',
   './index.html',

@@ -588,9 +588,131 @@ main {
 .disclaimer-box p strong { color: var(--text); }
 
 /* ══ Modal: Settings ══ */
-.settings-box { max-width: 420px; width: 100%; }
+.settings-box { max-width: 460px; width: 100%; }
 .settings-box h2 { font-size: 1.2rem; margin-bottom: 8px; color: var(--gold2); }
-.settings-box > p { color: var(--text2); font-size: 0.88rem; margin-bottom: 18px; line-height: 1.55; }
+.settings-box > p { color: var(--text2); font-size: 0.88rem; margin-bottom: 16px; line-height: 1.55; }
+
+/* ── Saved keys list ── */
+.keys-list {
+  margin-bottom: 18px;
+}
+
+.keys-list.hidden { display: none !important; }
+
+.keys-list-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.key-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 5px;
+  transition: border-color 0.15s;
+}
+
+.key-item.active {
+  border-color: var(--gold);
+  background: var(--gold-dim);
+}
+
+.key-radio {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 1rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+.key-item.active .key-radio { color: var(--gold2); }
+.key-radio:hover { color: var(--text); }
+
+.key-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.key-alias {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.key-masked {
+  font-size: 0.7rem;
+  color: var(--text3);
+  font-family: 'Consolas', 'Fira Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
+.key-active-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--gold);
+  background: rgba(201,168,76,0.1);
+  border: 1px solid rgba(201,168,76,0.3);
+  border-radius: 100px;
+  padding: 2px 7px;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.key-delete {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 0.75rem;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.key-delete:hover {
+  background: rgba(239,68,68,0.15);
+  color: var(--danger);
+}
+
+/* ── Add new key form ── */
+.add-key-form {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin-top: 2px;
+}
+
+.add-key-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
 
 .field-group {
   display: flex;

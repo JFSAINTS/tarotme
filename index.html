@@ -34,22 +34,32 @@
   </div>
 
   <!-- ══════════════════════════════════════
-       MODAL: Settings (API key)
+       MODAL: Settings (API keys)
   ══════════════════════════════════════ -->
   <div id="settings-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
     <div class="modal-box settings-box">
       <button class="modal-close" id="settings-close" aria-label="Close / Cerrar">✕</button>
       <h2 id="settings-title" data-i18n="settings_title"></h2>
       <p data-i18n="settings_body"></p>
-      <div class="field-group">
-        <label for="api-key-input" data-i18n="settings_label"></label>
-        <input type="password" id="api-key-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false">
-        <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" class="link-small" data-i18n="settings_link"></a>
-      </div>
-      <div class="settings-actions">
+
+      <!-- Saved keys list (rendered dynamically by JS) -->
+      <div id="keys-list" class="keys-list hidden"></div>
+
+      <!-- Add new key form -->
+      <div class="add-key-form">
+        <div class="add-key-title" data-i18n="settings_add_title"></div>
+        <div class="field-group">
+          <label for="api-key-alias" data-i18n="settings_alias_label"></label>
+          <input type="text" id="api-key-alias" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="field-group">
+          <label for="api-key-input" data-i18n="settings_label"></label>
+          <input type="password" id="api-key-input" placeholder="sk-or-v1-…" autocomplete="off" spellcheck="false">
+          <a href="https://openrouter.ai/keys" target="_blank" rel="noopener" class="link-small" data-i18n="settings_link"></a>
+        </div>
         <button id="api-key-save" class="btn-primary" data-i18n="settings_save"></button>
-        <button id="api-key-clear" class="btn-danger-outline" data-i18n="settings_clear"></button>
       </div>
+
       <p id="settings-status" class="settings-status"></p>
     </div>
   </div>

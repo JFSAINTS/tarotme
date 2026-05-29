@@ -21,7 +21,9 @@ let siguiendo     = false; // true while a follow-up request is in flight
 // ═══════════════════════════════════════
 // STORAGE KEYS
 // ═══════════════════════════════════════
-const LS_API_KEY    = 'tarotme_api_key';
+const LS_API_KEY    = 'tarotme_api_key';      // legacy single key (kept for migration)
+const LS_API_KEYS   = 'tarotme_api_keys';     // JSON: [{id, alias, key}]
+const LS_API_ACTIVE = 'tarotme_api_active';   // id of active key
 const LS_DISCLAIMER = 'tarotme_disclaimer_shown';
 const LS_LANG       = 'tarotme_lang';
 
@@ -95,12 +97,78 @@ async function storeDel(key) {
  * (e.g. browser cleared it), restore it from IndexedDB.
  */
 async function restoreStorage() {
-  const keys = [LS_API_KEY, LS_DISCLAIMER, LS_LANG];
+  const keys = [LS_API_KEY, LS_DISCLAIMER, LS_LANG, LS_API_KEYS, LS_API_ACTIVE];
   for (const key of keys) {
     if (!localStorage.getItem(key)) {
       const val = await idbGet(key);
       if (val) localStorage.setItem(key, val);
     }
+  }
+}
+
+// ── Multi-key helpers ──────────────────────────────────────────────────────
+
+function getApiKeys() {
+  try { return JSON.parse(localStorage.getItem(LS_API_KEYS) || '[]'); }
+  catch { return []; }
+}
+
+function getActiveKeyId() {
+  return localStorage.getItem(LS_API_ACTIVE) || null;
+}
+
+/** Returns the actual key string for the active entry, or null. */
+function getActiveKey() {
+  const keys = getApiKeys();
+  if (!keys.length) return null;
+  const id    = getActiveKeyId();
+  const found = id ? keys.find(k => k.id === id) : null;
+  return (found || keys[0]).key || null;
+}
+
+function _saveApiKeys(keys) {
+  const json = JSON.stringify(keys);
+  localStorage.setItem(LS_API_KEYS, json);
+  idbSave(LS_API_KEYS, json); // fire-and-forget
+}
+
+function setActiveKeyId(id) {
+  if (id) {
+    localStorage.setItem(LS_API_ACTIVE, id);
+    idbSave(LS_API_ACTIVE, id);
+  } else {
+    localStorage.removeItem(LS_API_ACTIVE);
+    idbDel(LS_API_ACTIVE);
+  }
+}
+
+function addApiKey(alias, key) {
+  const keys = getApiKeys();
+  const id   = 'k' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  keys.push({ id, alias: alias.trim() || `Clave ${keys.length + 1}`, key });
+  _saveApiKeys(keys);
+  setActiveKeyId(id);
+  return id;
+}
+
+function deleteApiKey(id) {
+  const wasActive = getActiveKeyId() === id;
+  const keys      = getApiKeys().filter(k => k.id !== id);
+  _saveApiKeys(keys);
+  if (wasActive) setActiveKeyId(keys[0]?.id || null);
+}
+
+function maskKey(key) {
+  if (!key || key.length < 8) return '••••••••';
+  return '•••••••••' + key.slice(-4);
+}
+
+/** Migrate a legacy single key to the new multi-key system (runs once). */
+function migrateOldApiKey() {
+  const oldKey = localStorage.getItem(LS_API_KEY);
+  if (oldKey && !getApiKeys().length) {
+    const alias = getLang() === 'es' ? 'Mi clave' : 'My key';
+    addApiKey(alias, oldKey);
   }
 }
 
@@ -115,8 +183,8 @@ const settingsModal    = $('settings-modal');
 const settingsBtn      = $('settings-btn');
 const settingsClose    = $('settings-close');
 const apiKeyInput      = $('api-key-input');
+const apiKeyAlias      = $('api-key-alias');
 const apiKeySave       = $('api-key-save');
-const apiKeyClear      = $('api-key-clear');
 const settingsStatus   = $('settings-status');
 const apiDot           = $('api-dot');
 const apiNotice        = $('api-notice');
@@ -310,6 +378,7 @@ function renderFAQ() {
 // ═══════════════════════════════════════
 async function init() {
   await restoreStorage();
+  migrateOldApiKey(); // one-time migration from legacy single key
   initStarfield();
 
   if (!localStorage.getItem(LS_DISCLAIMER)) {
@@ -341,14 +410,71 @@ disclaimerAccept.addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════
-// SETTINGS / API KEY
+// SETTINGS / API KEYS
 // ═══════════════════════════════════════
+function showSettingsStatus(text, type = 'info') {
+  settingsStatus.textContent = text;
+  settingsStatus.style.color = type === 'success' ? 'var(--success)'
+    : type === 'warn'    ? 'var(--warn)'
+    : 'var(--text3)';
+}
+
+function renderKeysList() {
+  const container = $('keys-list');
+  if (!container) return;
+  const keys     = getApiKeys();
+  const activeId = getActiveKeyId() || keys[0]?.id;
+
+  if (!keys.length) {
+    container.innerHTML = '';
+    container.classList.add('hidden');
+    return;
+  }
+
+  container.classList.remove('hidden');
+  container.innerHTML = `
+    <div class="keys-list-title">${t('settings_keys_title')}</div>
+    ${keys.map(k => `
+      <div class="key-item${k.id === activeId ? ' active' : ''}" data-id="${k.id}">
+        <button class="key-radio" data-id="${k.id}" title="${k.id === activeId ? t('settings_active_label') : ''}">
+          ${k.id === activeId ? '◉' : '○'}
+        </button>
+        <div class="key-info">
+          <span class="key-alias">${k.alias}</span>
+          <span class="key-masked">${maskKey(k.key)}</span>
+        </div>
+        ${k.id === activeId ? `<span class="key-active-badge">${t('settings_active_label')}</span>` : ''}
+        <button class="key-delete" data-id="${k.id}" aria-label="Eliminar ${k.alias}">✕</button>
+      </div>
+    `).join('')}
+  `;
+
+  container.querySelectorAll('.key-radio').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setActiveKeyId(btn.dataset.id);
+      actualizarEstadoApiKey();
+      renderKeysList();
+      showSettingsStatus(t('settings_switched'), 'success');
+    });
+  });
+
+  container.querySelectorAll('.key-delete').forEach(btn => {
+    btn.addEventListener('click', () => {
+      deleteApiKey(btn.dataset.id);
+      actualizarEstadoApiKey();
+      renderKeysList();
+      showSettingsStatus(t('settings_deleted'), 'info');
+    });
+  });
+}
+
 function openSettings() {
-  const key = localStorage.getItem(LS_API_KEY) || '';
-  apiKeyInput.value = key ? '••••••••••••••••••••' : '';
+  if (apiKeyAlias) apiKeyAlias.value = '';
+  apiKeyInput.value = '';
   settingsStatus.textContent = '';
+  renderKeysList();
   settingsModal.classList.remove('hidden');
-  setTimeout(() => apiKeyInput.focus(), 50);
+  setTimeout(() => (apiKeyAlias || apiKeyInput)?.focus(), 50);
 }
 window.openSettings = openSettings;
 
@@ -357,39 +483,35 @@ settingsClose.addEventListener('click', () => settingsModal.classList.add('hidde
 settingsModal.addEventListener('click', e => {
   if (e.target === settingsModal) settingsModal.classList.add('hidden');
 });
-apiKeyInput.addEventListener('focus', () => {
-  if (apiKeyInput.value.startsWith('•')) apiKeyInput.value = '';
-});
 
-apiKeySave.addEventListener('click', async () => {
-  const key = apiKeyInput.value.trim();
-  if (!key || key.startsWith('•')) {
-    settingsStatus.style.color = 'var(--warn)';
-    settingsStatus.textContent = key.startsWith('•') ? t('settings_nochange') : t('settings_invalid');
+apiKeySave.addEventListener('click', () => {
+  const aliasVal = apiKeyAlias?.value.trim() || '';
+  const keyVal   = apiKeyInput.value.trim();
+
+  if (!keyVal) {
+    showSettingsStatus(t('settings_invalid'), 'warn');
     return;
   }
-  if (!key.startsWith('sk-or-v1-')) {
-    settingsStatus.style.color = 'var(--warn)';
-    settingsStatus.textContent = t('settings_prefix');
+  if (!keyVal.startsWith('sk-or-v1-')) {
+    showSettingsStatus(t('settings_prefix'), 'warn');
     return;
   }
-  await storeSave(LS_API_KEY, key);
+
+  const defaultAlias = getLang() === 'es'
+    ? `Clave ${getApiKeys().length + 1}`
+    : `Key ${getApiKeys().length + 1}`;
+  addApiKey(aliasVal || defaultAlias, keyVal);
   actualizarEstadoApiKey();
-  settingsStatus.style.color = 'var(--success)';
-  settingsStatus.textContent = t('settings_saved');
-  setTimeout(() => settingsModal.classList.add('hidden'), 1400);
-});
+  renderKeysList();
 
-apiKeyClear.addEventListener('click', async () => {
-  await storeDel(LS_API_KEY);
+  if (apiKeyAlias) apiKeyAlias.value = '';
   apiKeyInput.value = '';
-  actualizarEstadoApiKey();
-  settingsStatus.style.color = 'var(--text3)';
-  settingsStatus.textContent = t('settings_deleted');
+  showSettingsStatus(t('settings_saved'), 'success');
+  setTimeout(() => settingsModal.classList.add('hidden'), 1500);
 });
 
 function actualizarEstadoApiKey() {
-  const tieneKey = !!localStorage.getItem(LS_API_KEY);
+  const tieneKey = !!getActiveKey();
   apiDot.classList.toggle('active', tieneKey);
   apiDot.title = tieneKey ? t('api_dot_on') : t('api_dot_off');
   apiNotice.classList.toggle('hidden', tieneKey);
@@ -671,7 +793,7 @@ function actualizarBotonLeer() {
 }
 
 async function realizarLectura() {
-  const apiKey = localStorage.getItem('tarotme_api_key');
+  const apiKey = getActiveKey();
   if (!apiKey) { openSettings(); return; }
   if (!state.imagenBase64) return;
 
