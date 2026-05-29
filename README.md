@@ -46,9 +46,10 @@ La lectura con IA requiere tu propia clave de API de [OpenRouter](https://openro
 Las claves se guardan **solo en tu dispositivo** (localStorage + IndexedDB) y nunca en ningún servidor.
 
 - Puedes guardar **múltiples claves** con alias y alternar entre ellas desde los ajustes ⚙️
-- Las cuentas nuevas de OpenRouter reciben crédito gratuito inicial
+- Las cuentas nuevas de OpenRouter reciben crédito gratuito inicial para un uso esporadico
 - Coste aproximado por lectura: **~$0.02 USD** con el modelo Qwen 2.5 VL 72B
-- Con $5 puedes hacer más de 200 lecturas
+- Con $5 puedes hacer más de 200 lecturas si necesitas un uso mayor.
+
 
 ## 🃏 Imágenes
 
