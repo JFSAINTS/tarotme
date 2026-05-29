@@ -13,6 +13,11 @@ const state = {
   interpretando: false,
 };
 
+// ─── Follow-up conversation state ───
+let chatHistory   = []; // [{role, content}] — full turn history for the API
+let chatSysPrompt = ''; // system prompt saved from the active reading
+let siguiendo     = false; // true while a follow-up request is in flight
+
 // ═══════════════════════════════════════
 // STORAGE KEYS
 // ═══════════════════════════════════════
@@ -246,6 +251,8 @@ function applyTranslations() {
   // Special: search placeholder
   cardSearch.placeholder   = t('search_ph');
   questionInput.placeholder = t('question_ph');
+  const followupInput = $('followup-input');
+  if (followupInput) followupInput.placeholder = t('followup_ph');
   apiDot.title = localStorage.getItem(LS_API_KEY)
     ? t('api_dot_on') : t('api_dot_off');
 
@@ -431,6 +438,7 @@ function bindEventos() {
 
   setupUpload();
   setupLectura();
+  setupFollowup();
 }
 
 // ═══════════════════════════════════════
@@ -641,6 +649,13 @@ function setupLectura() {
   readBtn.addEventListener('click', realizarLectura);
   newReadingBtn.addEventListener('click', () => {
     readingResult.classList.add('hidden');
+    // Reset follow-up chat
+    chatHistory   = [];
+    chatSysPrompt = '';
+    const followupSec  = $('followup-section');
+    const chatHistoryEl = $('chat-history');
+    if (followupSec)   followupSec.classList.add('hidden');
+    if (chatHistoryEl) chatHistoryEl.innerHTML = '';
     limpiarImagen();
     questionInput.value = '';
     charCount.textContent = '0';
@@ -715,7 +730,22 @@ async function realizarLectura() {
 
     const data  = await resp.json();
     const texto = data.choices?.[0]?.message?.content || t('err_no_resp');
+
+    // Save conversation for follow-ups
+    chatSysPrompt = systemPrompt;
+    chatHistory   = [
+      {
+        role: 'user',
+        content: [
+          { type: 'image_url', image_url: { url: `data:${state.imagenTipo};base64,${state.imagenBase64}` } },
+          { type: 'text', text: textoUsuario }
+        ]
+      },
+      { role: 'assistant', content: texto }
+    ];
+
     mostrarResultado(texto);
+    iniciarFollowup();
 
   } catch (err) {
     resultContent.innerHTML = `
@@ -739,6 +769,170 @@ function mostrarResultado(texto) {
     .filter(p => p.trim())
     .map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`)
     .join('');
+}
+
+// ═══════════════════════════════════════
+// FOLLOW-UP CHAT
+// ═══════════════════════════════════════
+
+/** Show/reset the follow-up section after a successful reading. */
+function iniciarFollowup() {
+  const followupSec   = $('followup-section');
+  const chatHistoryEl = $('chat-history');
+  const followupInput = $('followup-input');
+  if (!followupSec) return;
+
+  if (chatHistoryEl) chatHistoryEl.innerHTML = '';
+  if (followupInput) {
+    followupInput.value = '';
+    followupInput.placeholder = t('followup_ph');
+  }
+  actualizarBtnFollowup();
+  followupSec.classList.remove('hidden');
+  // Scroll so the input row is visible
+  setTimeout(() => followupSec.scrollIntoView({ behavior: 'smooth', block: 'end' }), 150);
+}
+
+/** Wire up events for the follow-up input (called once on init). */
+function setupFollowup() {
+  const followupInput   = $('followup-input');
+  const followupBtn     = $('followup-btn');
+  if (!followupInput || !followupBtn) return;
+
+  followupInput.addEventListener('input', actualizarBtnFollowup);
+
+  followupBtn.addEventListener('click', realizarSeguimiento);
+
+  // Enter submits, Shift+Enter inserts newline
+  followupInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (!followupBtn.disabled) realizarSeguimiento();
+    }
+  });
+}
+
+function actualizarBtnFollowup() {
+  const followupInput = $('followup-input');
+  const followupBtn   = $('followup-btn');
+  if (!followupBtn) return;
+  followupBtn.disabled = !followupInput?.value.trim() || siguiendo;
+}
+
+/** Send a follow-up question and stream the answer into the chat. */
+async function realizarSeguimiento() {
+  const apiKey = localStorage.getItem(LS_API_KEY);
+  if (!apiKey || siguiendo || !chatHistory.length) return;
+
+  const followupInput   = $('followup-input');
+  const followupBtnText = $('followup-btn-text');
+  const pregunta = followupInput?.value.trim();
+  if (!pregunta) return;
+
+  // Show user bubble
+  agregarMensajeChat('user', pregunta);
+  followupInput.value = '';
+  siguiendo = true;
+  actualizarBtnFollowup();
+  if (followupBtnText) followupBtnText.textContent = t('followup_btn_wait');
+
+  // Loading bubble (will be replaced by AI response)
+  const loadingId = `fl-${Date.now()}`;
+  agregarMensajeChat('loading', '', loadingId);
+
+  // Add user turn to history
+  chatHistory.push({ role: 'user', content: pregunta });
+
+  // Build a slightly shorter system prompt for follow-ups
+  const lang = getLang();
+  const followupSys = chatSysPrompt + (lang === 'es'
+    ? '\n\nEn las preguntas de seguimiento, responde de forma concisa (80–200 palabras) sin repetir la identificación inicial de las cartas.'
+    : '\n\nFor follow-up questions, respond concisely (80–200 words) without repeating the initial card identification.');
+
+  try {
+    const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://jfsaints.github.io/tarotme/',
+        'X-Title': 'TarotMe',
+      },
+      body: JSON.stringify({
+        model: 'qwen/qwen2.5-vl-72b-instruct',
+        max_tokens: 600,
+        messages: [
+          { role: 'system', content: followupSys },
+          ...chatHistory
+        ]
+      })
+    });
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `Error ${resp.status}: ${resp.statusText}`);
+    }
+
+    const data  = await resp.json();
+    const texto = data.choices?.[0]?.message?.content || t('err_no_resp');
+
+    document.getElementById(loadingId)?.remove();
+    agregarMensajeChat('ai', texto);
+
+    // Save AI turn
+    chatHistory.push({ role: 'assistant', content: texto });
+
+  } catch (err) {
+    document.getElementById(loadingId)?.remove();
+    agregarMensajeChat('error', err.message);
+    // Remove the unanswered user turn from history
+    chatHistory.pop();
+  } finally {
+    siguiendo = false;
+    actualizarBtnFollowup();
+    if (followupBtnText) followupBtnText.textContent = t('followup_btn');
+  }
+}
+
+/**
+ * Append a message bubble to the chat history.
+ * @param {'user'|'ai'|'loading'|'error'} type
+ * @param {string} text
+ * @param {string} [id]  optional DOM id (used for the loading bubble)
+ */
+function agregarMensajeChat(type, text, id) {
+  const chatHistoryEl = $('chat-history');
+  if (!chatHistoryEl) return;
+
+  const div = document.createElement('div');
+  if (id) div.id = id;
+
+  switch (type) {
+    case 'user':
+      div.className   = 'chat-message chat-msg-user';
+      div.textContent = text;
+      break;
+    case 'ai':
+      div.className = 'chat-message chat-msg-ai';
+      div.innerHTML = text
+        .split(/\n{2,}/)
+        .filter(p => p.trim())
+        .map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`)
+        .join('');
+      break;
+    case 'loading':
+      div.className = 'chat-message chat-msg-ai chat-msg-loading';
+      div.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+      break;
+    case 'error':
+      div.className   = 'chat-message chat-msg-error';
+      div.textContent = `⚠️ ${text}`;
+      break;
+  }
+
+  chatHistoryEl.appendChild(div);
+  // Scroll chat area to bottom
+  chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
 }
 
 // ═══════════════════════════════════════

@@ -77,6 +77,12 @@ const UI = {
     api_dot_on:       'Clave de API configurada',
     api_dot_off:      'Sin clave de API configurada',
 
+    // Follow-up conversation
+    followup_title:    'Sigue preguntando',
+    followup_ph:       'Escribe una pregunta sobre la lectura…',
+    followup_btn:      'Enviar',
+    followup_btn_wait: 'Pensando…',
+
     // Reading AI prompt pieces
     prompt_with_q:    'Mi pregunta o tema es: "{q}"\n\nPor favor interpreta las cartas que ves en la imagen en relación con este tema.',
     prompt_general:   'Por favor interpreta las cartas que ves en la imagen de forma general.',
@@ -451,6 +457,12 @@ Pautas importantes:
     reading_thinking: 'The tarot reader is interpreting the cards…',
     api_dot_on:       'API key configured',
     api_dot_off:      'No API key configured',
+
+    // Follow-up conversation
+    followup_title:    'Keep asking',
+    followup_ph:       'Write a question about the reading…',
+    followup_btn:      'Send',
+    followup_btn_wait: 'Thinking…',
 
     // Reading AI prompt pieces
     prompt_with_q:    'My question or topic is: "{q}"\n\nPlease interpret the cards you see in the image in relation to this topic.',

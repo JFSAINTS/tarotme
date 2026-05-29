@@ -229,6 +229,22 @@
             <div class="result-disclaimer" data-i18n="result_disclaimer"></div>
           </div>
           <div id="result-content" class="result-content"></div>
+
+          <!-- Follow-up conversation (appears after initial reading) -->
+          <div id="followup-section" class="followup-section hidden">
+            <div class="followup-header">
+              <span class="followup-header-icon">✦</span>
+              <span data-i18n="followup_title"></span>
+            </div>
+            <div id="chat-history" class="chat-history"></div>
+            <div class="followup-input-row">
+              <textarea id="followup-input" rows="2" maxlength="400"></textarea>
+              <button id="followup-btn" class="btn-followup" disabled>
+                <span id="followup-btn-text" data-i18n="followup_btn"></span>
+              </button>
+            </div>
+          </div>
+
           <div class="result-actions">
             <button id="new-reading-btn" class="btn-secondary" data-i18n="new_reading"></button>
           </div>
