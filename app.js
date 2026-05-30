@@ -943,7 +943,7 @@ function actualizarBtnFollowup() {
 
 /** Send a follow-up question and stream the answer into the chat. */
 async function realizarSeguimiento() {
-  const apiKey = localStorage.getItem(LS_API_KEY);
+  const apiKey = getActiveKey();
   if (!apiKey || siguiendo || !chatHistory.length) return;
 
   const followupInput   = $('followup-input');
